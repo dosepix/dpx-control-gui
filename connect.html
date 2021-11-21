@@ -1,0 +1,56 @@
+<h1>Connection</h1>
+<form>
+    <!-- Port Selection -->
+    <div class="row mb-3">
+        <label for="port-select-block" class="col-sm-2 col-form-label">Port</label>
+        <div class="input-group mb-10" id="port-select-block">
+            <select class="form-control" id="port-select"></select>
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="button" id="port-select-refresh-button">Refresh</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Baud Rate -->
+    <div class="row mb-3">
+        <label for="baud-input" class="col-sm-2 col-form-label">Baud-rate</label>
+        <div class="col-sm-10">
+            <input class="form-control" type="number" id="baud-input" value="2000000" min="0" max="2000000" data-bind="value:baud-input" onkeypress="return event.keyCode != 13;"/>
+        </div>
+    </div>
+
+    <!-- Load Config -->
+    <div class="row mb-3">
+        <label for="config-input-group" class="col-sm-2 col-form-label">Config</label>
+        <div class="col-sm-10">
+            <div class="input-group" id="config-input-group">
+                <input class="form-control" type="file" id="config-input">
+                <button class="btn btn-outline-secondary" type="button" id="config-input-reset-button">Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Connect -->
+    <button class="btn btn-primary" type="button" id="connect-button">Connect</button>
+</form>
+
+<!-- Alert Modal -->          
+<div class="modal" tabindex="-1" id="alert-modal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Error</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Baud rate is required!</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- Has to be at the end of the script -->
+<script src="./scripts/connect.js" type='module'></script>

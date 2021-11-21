@@ -1,0 +1,47 @@
+<form id="form" class="row g-3">
+    <canvas id="chart"></canvas>
+    <div class="col-md-2">
+        <label for="tot-range-slider" class="form-label">Max. ToT
+        </label>
+    </div>  
+    <div class="col-md-8">
+        <input type="range" class="form-range" min="0" max="400" value="400" step=1 id="tot-range-slider">
+    </div>
+    <div class="form-floating col-md-2">
+        <input type="number" class="form-control" id="tot-range-input" value=400 max=400>
+        <label for="tot-range-input">in ToT</label>
+    </div>
+
+    <div id="input-fields" class="row g-3">
+        <!-- Name input row -->
+        <div class="col-md-2">
+            <label for="input-name" class="col-sm col-form-label">Name</label>
+        </div>
+        <div class="form-floating col-md-10">
+            <input type="text" class="form-control" id="input-name">
+            <label for="input-name">Measurement name</label>
+        </div>
+
+        <!-- Duration input row -->
+        <div class="col-md-2">
+            <label for="select-time" class="col-sm col-form-label" id="input-time-label">Duration</label>
+        </div>
+        <div class="col-md-2">
+            <select class="form-control" id="select-time">
+                <option>Frames</option>
+                <option>Seconds</option>
+                <option>Infinite</option>
+            </select>
+        </div>
+        <div class="col-md-8">
+            <input type="number" class="form-control" id="input-time">
+        </div>
+    </div>
+
+    <!-- Start button row -->
+    <div class="row-md-4">
+        <button class="btn btn-primary" type="button" id="start-button">Start</button>
+    </div>    
+</form>
+
+<script src="./scripts/totmode.js" type="module"></script>

@@ -1,0 +1,96 @@
+<link href="index.html"/>
+
+<div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" id="sidebar">
+    <div class="d-flex justify-content-between" style="height: 30px;">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+            <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+            <span class="fs-4">DPX Control</span>
+        </a>
+        <button type="button" class="btn" id="sidebar-collapse-button">
+            <i class="bi bi-arrow-bar-left"></i>
+        </button>
+    </div>
+    <hr> 
+    <ul class="nav nav-pills flex-column mb-auto">
+      <li class="nav-item">
+        <a href="#" id="sidebar-home-link" class="nav-link text-white" aria-current="page">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"/></svg>
+          Home
+        </a>
+      </li>
+      <li>
+        <a href="#" id="sidebar-connect-link" class="nav-link text-white">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
+          Connect
+        </a>
+      </li>
+      <li>
+        <a href="#" id="sidebar-measure-link" class="nav-link text-white">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+          Measure
+        </a>
+      </li>
+      <li>
+        <a href="#" id="#sidebar-analyze-link" class="nav-link text-white">
+          <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
+          Analyze
+        </a>
+      </li>
+    </ul>
+    <hr>
+
+    <!-- USER MENU -->
+    <div class="dropdown">
+      <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+        <img src="https://github.com/dosepix.png" alt="" width="32" height="32" class="rounded-circle me-2">
+        <strong id='user-name'>Dosepix</strong>
+      </a>
+      <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+        <li><a class="dropdown-item" href="#" id="new-user-link">New user</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="#" id="change-user-link">Switch user</a></li>
+      </ul>
+    </div>    
+</div>
+
+<!-- NEW USER MODAL -->
+<div class="modal" tabindex="-1" id="new-user-modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create new user</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" id="new-user-input">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="new-user-create-button">Create</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="new-user-dismiss-button">Dismiss</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CHANGE USER MODAL -->
+<div class="modal" tabindex="-1" id="change-user-modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Switch user</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <select class="form-control" id="change-user-select"></select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="change-user-button">Change</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="change-user-dismiss-button">Dismiss</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="./scripts/sidebar.js" type="module"></script>

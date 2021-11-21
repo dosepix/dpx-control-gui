@@ -1,0 +1,24 @@
+{
+  "name": "dpx_gui",
+  "version": "0.0.1",
+  "description": "GUI for dpx_func_python via dpx_api",
+  "main": "scripts/index.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sebastian Schmidt",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^16.0.0"
+  },
+  "dependencies": {
+    "@popperjs/core": "^2.10.2",
+    "axios": "^0.24.0",
+    "bootstrap": "^5.1.3",
+    "bootstrap-icons": "^1.7.1",
+    "chart.js": "^3.6.0",
+    "jquery": "^3.6.0",
+    "popper": "^1.0.1"
+  }
+}

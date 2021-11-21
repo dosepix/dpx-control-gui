@@ -1,0 +1,48 @@
+<link href="index.html"/>
+
+<h1>Main Page</h1>
+<div class="d-flex flex-column flex-shrink-0 p-3">
+<div class="card" id="connect-card">
+    <img src="assets/dpx_connect.svg" class="card-img-top p-3" alt="..." style="max-width: 400px; width: 100%" id="connect-img">
+    <div class="card-body">
+      <h5 class="card-title" id="connect-title"></h5>
+      <p class="card-text" id="connect-text"></p>
+    </div>
+</div>
+<br>
+
+<h2>Measure</h2>
+<div class="row row-cols-1 row-cols-md-3 g-4" id="cards-measure">
+    <div class="col">
+      <div class="card h-100" id="totmode-card">
+        <img src="assets/Am_fine.svg" class="card-img-top p-3" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">ToT-Mode</h5>
+          <p class="card-text">Every pixel is read-out per frame</p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card h-100" id="dosimode-card">
+        <img src="assets/Am_rough.svg" class="card-img-top p-3" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Dosi-Mode</h5>
+          <p class="card-text">Pixel matrix is read-out column-wise</p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card h-100" id="integrationmode-card">
+        <img src="assets/integration.svg" class="card-img-top p-3" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Integration-Mode</h5>
+          <p class="card-text">ToT values per pixel are integrated per frame</p>
+        </div>
+      </div>
+    </div>
+</div>
+<br>
+
+<h2>Analyze</h2>
+
+<script src="./scripts/main.js" type="module"></script>
