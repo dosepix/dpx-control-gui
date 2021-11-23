@@ -1,5 +1,6 @@
 const chartjs = require('chart.js');
 const axios = require('axios');
+import { get_shown_pixels } from './pixel_matrix.js';
 
 var input_fields = document.querySelector('#input-fields');
 var start_button = $('#start-button');
@@ -12,18 +13,30 @@ var tot_curr = tot_max;
 tot_range_input.max = tot_max;
 tot_range_slider.max = tot_max;
 
+// Pixel select
+var pixel_select = $('#pixel-select');
+var pixel_select_button = $('#pixel-select-button');
+var pixel_select_modal = $('#pixel-select-modal');
+
+// Status variables
+var measurement_running = false;
+var interval = null;
+
 tot_range_input.addEventListener('input', () => {
     if (tot_range_input.value > tot_max) {
         tot_range_input.value = tot_max;
-        return;
     }
     tot_range_slider.value = tot_range_input.value;
+    myChart.options.scales.x.max = tot_range_input.value;
+    // if (!measurement_running) myChart.update();
+    tot_curr = tot_range_input.value;
 });
 
 tot_range_slider.addEventListener('input', () => {
     tot_range_input.value = tot_range_slider.value;
 
     myChart.options.scales.x.max = tot_range_slider.value;
+    // if (!measurement_running) myChart.update();
     tot_curr = tot_range_slider.value;
 });
 
@@ -106,7 +119,7 @@ const config = {
         },
     },
     plugins: [chartAreaBorder],
-};  
+}; 
 
 const myChart = new chartjs.Chart(
     document.getElementById('chart'),
@@ -114,7 +127,7 @@ const myChart = new chartjs.Chart(
 );
 
 async function start_measurement() {
-    return await axios.post(window.url + 'measure/tot');
+    return await axios.get(window.url + 'measure/tot');
 }
 
 async function stop_measurement() {
@@ -122,11 +135,18 @@ async function stop_measurement() {
 }
 
 async function get_frame() {
-    return await axios.get(window.url + 'measure/tot');
+    // Show only selected pixels
+    if (pixel_select.val() == 'single') {
+        let shown_pixels = get_shown_pixels();
+        return await axios.post(window.url + 'measure/tot', 
+            {'show': pixel_select.val(),
+            'pixels': shown_pixels}
+        );
+    } else {
+        return await axios.post(window.url + 'measure/tot', {'show': pixel_select.val()});
+    }
 }
 
-var measurement_running = false;
-var interval = null;
 start_button.on('click', async () => {
     if(!measurement_running) {
         console.log('Start measurement');
@@ -153,14 +173,14 @@ start_button.on('click', async () => {
             let d = frame.data.frame.slice(0, tot_curr);
 
             let data = {
-                labels: frame.data.bins,
+                labels: l,
                 datasets: [{
                     barPercentage: 1,
                     data: d,
                 }],
             }
-            config.data = data;
-            myChart.update(config);
+            myChart.data = data;
+            myChart.update();
         }
     } else {
         await stop_measurement();
@@ -172,3 +192,8 @@ start_button.on('click', async () => {
         start_button[0].innerText = "Start";
     }
 });
+
+pixel_select_button.on('click', () => {
+    pixel_select_modal.modal('show');
+});
+

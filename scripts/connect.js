@@ -15,9 +15,9 @@ alert_modal.appendTo("body");
 // Show available ports in select
 function get_ports() {
     axios.post(window.url + '/control/get_ports').then((res) => {
-        // let ports = res.data.ports;
+        let ports = res.data.ports;
         // DEBUG
-        let ports = ['port1', 'port2', 'port3'];
+        // let ports = ['port1', 'port2', 'port3'];
 
         // Clear all options
         for(let idx=0; idx < port_select.options.length; idx) {
@@ -45,50 +45,86 @@ config_input_reset_button.on('click', () => {
     config_input.value = config_input_init;
 });
 
-connect_button.on('click', () => {
-    // Port is required
-    if (port_select.value === null) {
-        // TODO: Change text
-        alert_modal.modal('show');
-        return;
-    } 
-    axios.post(window.url + '/control/set_port', {"port": port_select.value})
-    .then((res) => {
+connect_button.on('click', async function () {
+    // let connected = axios.post();
 
-    });
+    if (!window.dpx_connected) {
+        // Port is required
+        if (port_select.value === null) {
+            // TODO: Change text
+            alert_modal.modal('show');
+            return;
+        } 
+        axios.post(window.url + 'control/set_port', {"port": port_select.value})
+        .then((res) => {});
 
-    // Baud rate is required
-    if (!baud_input.value) {
-        console.log("Baud rate is missing!");
-        alert_modal.modal('show');
-        return;
-    }
-
-    axios.post(window.url + '/control/set_baud', {"baud": baud_input.value})
-        .then((res) => {
-            // console.log(res);
-        }).catch((error) => {
-
+        // Baud rate is required
+        if (!baud_input.value) {
+            console.log("Baud rate is missing!");
+            alert_modal.modal('show');
+            return;
         }
-    );
 
-    // Load config, otherwise use standard values
-    if (config_input.value) {
-        axios.post(window.url + '/control/set_config', {"file": config_input.files[0].path});
+        axios.post(window.url + 'control/set_baud', {"baud": baud_input.value})
+            .then((res) => {
+                // console.log(res);
+            }).catch((error) => {
+
+            }
+        );
+
+        // Load config, otherwise use standard values
+        if (config_input.value) {
+            axios.post(window.url + 'control/set_config', {"file": config_input.files[0].path});
+        }
+
+        // TODO: Requires timeout!
+        axios.post(url + 'control/connect').then(async (res) => {
+            await is_connected();
+            connect_button.text("Connect");
+            connect_button.prop('disabled', false);
+    
+            // Return to main screen if sucessfully connected
+            connection_state();
+            show_container( 'main' );
+        }).catch((error) => {
+            console.log(error.toJSON());
+        });
+
+        connect_button.text("Connecting...");
+        connect_button.prop('disabled', true);
+    } else {
+        disconnect();
     }
-
-    // Debug
-    // axios.post(url + '/control/connect');
-    window.dpx_connected = true;
-
-    // Return to main screen if sucessfully connected
-    show_container( 'main' );
-    connection_state();
 });
 
-export function disconnect() {
-    window.dpx_connected = false;
-    // TODO: really disconnect DPX
+export async function is_connected() {
+    try {
+        let res = await axios.get(window.url + 'control/isconnected');
+        if (res.status == 201) {
+            window.dpx_connected = true;
+            return true;
+        }
+    } catch (err) {
+        console.log(err);
+        window.dpx_connected = false;
+        return false;
+    }
+}
+
+export async function disconnect() {
+    let tries = 10;
+    console.log(await is_connected());
+    while (await is_connected() & (tries > 0)) {
+        // Need to wait for disconnect before state can be checked
+        await axios.delete(window.url + 'control/connect')
+        .then((res) => {
+            console.log(res)
+        }).catch((err) => {
+            console.log(err);
+        });
+        tries -= 1;
+    }
 }
 
 $( document ).ready(() => {

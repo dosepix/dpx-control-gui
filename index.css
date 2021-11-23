@@ -1,0 +1,124 @@
+@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+
+.title {
+	font-family: Helvetica;
+	size: 18px;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #fafafa;
+    box-sizing: border-box; 
+
+	-moz-user-select: none; 
+	-webkit-user-select: none; 
+	-ms-user-select: none; 
+	user-select: none;
+	-o-user-select:none;
+}
+
+h1 {
+	color: rgb(58, 58, 58);
+}
+
+p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1em;
+    font-weight: 300;
+    line-height: 1.7em;
+    color: #999;
+}
+
+a, a:hover, a:focus {
+    color: inherit;
+    text-decoration: none !important;
+    transition: all 0.3s;
+}
+
+.wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    z-index: -1;
+    /*
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    width: 100%;
+    height: 100%;
+    */
+}
+
+#sidebar {
+    height: 100%;
+    width: 300px; 
+    position: fixed; 
+    z-index: auto; 
+    top: 0; 
+    left: 0;
+    overflow-x: hidden; /* Disable horizontal scroll */
+    padding-top: 20px;
+}
+
+.card-img-top {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 400px;
+    width: 100%;
+}
+
+.card:hover {
+    border: 1px solid rgba(0, 0, 128, 1);
+    cursor: pointer;
+}
+
+.modal-backdrop{z-index: 1050;}
+.modal{z-index: 1060;}
+
+.container {
+    /* width: 100%;
+    padding: 20px;
+    min-height: 100vh;
+    transition: all 0.3s; */
+
+    /* margin: 30px; */
+    margin-left: 300px; 
+    display: true; /* Hidden by default */
+    width: 100%; /* Full width (cover the whole page) */
+    height: 100%; /* Full height (cover the whole page) */
+    padding: 20px;
+    min-height: 100vh;
+    z-index: auto; /* Specify a stack order in case you're using a different order for other elements */
+    transition: all 0.3s;
+}
+
+/* === PIXEL MATRIX === */
+.pixel_grid {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-around;
+    flex-flow: row wrap;
+    /* width: 600px; */
+    aspect-ratio: 1 / 1;
+}
+  
+.pixel_grid > .line-break {
+    width: 100%;
+}
+
+.box_button, .box_button_small, .box_button_inactive, .box_button_inactive_small {
+    flex: 1;
+    background-color: #4CAF50;
+    border: 1px solid #555555;
+    color: white;
+    padding: 10px 10px;
+    aspect-ratio: 1 / 1;
+}
+.box_button_inactive {
+    background-color: #ff222255;
+}
+.box_button_small {
+    background-color: #4CAF5055;
+}
+.box_button_inactive_small {
+    background-color: #ff222233;
+}

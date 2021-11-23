@@ -1,5 +1,5 @@
 import { show_container } from './sidebar.js';
-import { disconnect } from './connect.js'
+import { disconnect, is_connected } from './connect.js'
 
 // Page containers
 var connect_container = document.querySelector('#connect-container');
@@ -71,6 +71,7 @@ setInterval(() => {
     dpx_connected_last = window.dpx_connected;
 }, 1000);
 
-$( document ).ready(() => {
+$( document ).ready(async () => {
+    console.log( await is_connected() );
     connection_state()
 });
