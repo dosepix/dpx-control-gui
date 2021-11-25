@@ -19,13 +19,21 @@
         </div>
     </div>
 
+    <!-- Baud Rate -->
+    <div class="row mb-3">
+        <label for="dpx-input" class="col-sm-2 col-form-label">DPX-number</label>
+        <div class="col-sm-10">
+            <input class="form-control" type="number" id="dpx-input" value="0" min="0" max="999" data-bind="value:dpx-input"/>
+        </div>
+    </div>
+
     <!-- Load Config -->
     <div class="row mb-3">
         <label for="config-input-group" class="col-sm-2 col-form-label">Config</label>
-        <div class="col-sm-10">
-            <div class="input-group" id="config-input-group">
-                <input class="form-control" type="file" id="config-input">
-                <button class="btn btn-outline-secondary" type="button" id="config-input-reset-button">Reset</button>
+        <div class="input-group mb-10" id="config-select-block">
+            <select class="form-control" id="config-select"></select>
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="button" id="config-select-button">Connect & New Config</button>
             </div>
         </div>
     </div>

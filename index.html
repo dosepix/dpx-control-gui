@@ -9,13 +9,6 @@
         <!-- meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" -->
         <!-- meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'" -->
         <title>Index</title>
-
-		<!-- Include html -->
-		<script>window.$ = window.jQuery = require('jquery');</script>
-	    <script> $(function(){$("#include-sidebar").load("sidebar.html"); });</script>
-	    <script> $(function(){$("#include-main").load("main.html"); });</script> 
-	    <script> $(function(){$("#include-connect").load("connect.html"); });</script> 
-	    <script> $(function(){$("#include-totmode").load("totmode.html"); });</script> 
     </head>
     
     <body>
@@ -35,6 +28,11 @@
                 <div id="include-connect"></div>
             </div>
 
+            <!-- Config Page -->
+            <div class="container" id="config-container">
+                <div id="include-config"></div>
+            </div>
+
             <!-- ToT-mode Page -->
             <div class="container" id="totmode-container">
                 <div id="include-totmode"></div>
@@ -42,6 +40,14 @@
         </div>
 
 		<!-- Has to be at the end of the script -->
+		<!-- Include html -->
+		<script>window.$ = window.jQuery = require('jquery');</script>
+	    <script> $(function(){$("#include-sidebar").load("sidebar.html"); });</script>
+	    <script> $(function(){$("#include-main").load("main.html"); });</script> 
+	    <script> $(function(){$("#include-connect").load("connect.html"); });</script> 
+	    <script> $(function(){$("#include-config").load("config.html"); });</script> 
+	    <script> $(function(){$("#include-totmode").load("totmode.html"); });</script> 
+
         <script>require('popper');</script>
         <script>require('bootstrap');</script>
         <script src="./scripts/renderer.js" type='module'></script>

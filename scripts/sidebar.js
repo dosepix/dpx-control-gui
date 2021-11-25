@@ -29,10 +29,12 @@ var change_user_dismiss_button = $('#change-user-dismiss-button');
 var main_container = document.querySelector('#main-container');
 var connect_container = document.querySelector('#connect-container');
 var totmode_container = document.querySelector('#totmode-container');
+var config_container = document.querySelector('#config-container');
 
 var containers = {
     main: main_container,
     connect: connect_container,
+    config: config_container,
     totmode: totmode_container,
 }
 
@@ -71,8 +73,10 @@ sidebar_connect_link.onclick = function() {
 // === NEW USER MENU ===
 var new_user_popover;
 
-function new_popover(popover, element, title, content) {
-    if (popover._isEnabled != null) popover.dispose();
+export function new_popover(popover, element, title, content) {
+    if (popover != undefined) {
+        if (popover._isEnabled != null) popover.dispose();
+    }
     let options = {
         title: title,
         content: content,

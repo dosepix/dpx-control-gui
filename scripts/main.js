@@ -16,7 +16,7 @@ var gray_out = 0.5;
 var measure_enabled;
 
 // === CONNECT ===
-connect_card.onclick = function() {
+connect_card.onclick = async function() {
     if(window.dpx_connected) {
         // Disconnect DPX
         disconnect();
