@@ -1,13 +1,14 @@
 <h1>Connection</h1>
+<br>
 <form>
     <!-- Port Selection -->
     <div class="row mb-3">
         <label for="port-select-block" class="col-sm-2 col-form-label">Port</label>
-        <div class="input-group mb-10" id="port-select-block">
+        <div class="col-sm-8">
             <select class="form-control" id="port-select"></select>
-            <div class="input-group-append">
-                <button class="btn btn-primary" type="button" id="port-select-refresh-button">Refresh</button>
-            </div>
+        </div>
+        <div class="col-sm-2">
+            <button class="btn btn-primary" type="button" id="port-select-refresh-button" style="width: 100%;">Refresh</button>
         </div>
     </div>
 
@@ -30,11 +31,11 @@
     <!-- Load Config -->
     <div class="row mb-3">
         <label for="config-input-group" class="col-sm-2 col-form-label">Config</label>
-        <div class="input-group mb-10" id="config-select-block">
+        <div class="col-sm-8">
             <select class="form-control" id="config-select"></select>
-            <div class="input-group-append">
-                <button class="btn btn-primary" type="button" id="config-select-button">Connect & New Config</button>
-            </div>
+        </div>
+        <div class="col-sm-2">
+            <button class="btn btn-primary" type="button" id="config-select-button" style="width: 100%;">New</button>
         </div>
     </div>
 

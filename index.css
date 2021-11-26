@@ -85,7 +85,7 @@ a, a:hover, a:focus {
     display: true; /* Hidden by default */
     width: 100%; /* Full width (cover the whole page) */
     height: 100%; /* Full height (cover the whole page) */
-    padding: 20px;
+    padding: 50px;
     min-height: 100vh;
     z-index: auto; /* Specify a stack order in case you're using a different order for other elements */
     transition: all 0.3s;
