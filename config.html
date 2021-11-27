@@ -25,7 +25,7 @@
             <label for="input-ikrum" class="col-sm col-form-label">I<sub>krum</sub></label>
         </div>
         <div class="form-floating col-md-10">
-            <input type="number" class="form-control" id="input-ikrum">
+            <input type="number" class="form-control" id="input-ikrum" value=20>
             <label for="input-ikrum">Krummenacher current</label>
         </div>
 
@@ -46,38 +46,9 @@
     <!-- Start button row -->
     <div class="row-md-4">
         <button class="btn btn-primary" type="button" id="create-config-button">Create Config</button>
+        <button class="btn btn-secondary" type="button" id="dismiss-config-button">Dismiss</button>
     </div> 
 </form>
-
-<!-- THL CALIBRATION MODAL -->
-<div class="modal" tabindex="-1" id="thl-calib-modal" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">THL Calibration</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-
-            <div class="modal-body" id="thl-calib-modal-body">
-                <canvas id="thl-calib-chart"></canvas>
-                <div class="row g-3">
-                    <div class="col-md-10">
-                        <div class="progress">
-                            <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="thl-calib-progress"></div>
-                        </div>                
-                    </div>      
-                    <div class="col-md-2">
-                        <label class="col-sm col-form-label" for="thl-calib-progress" id="thl-calib-speed-label"></label>
-                    </div>    
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="equal-discard-button">Discard & Close</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- EQUALIZATION MODAL -->
 <div class="modal" tabindex="-1" id="equal-modal" aria-hidden="true">

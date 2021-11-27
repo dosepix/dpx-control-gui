@@ -1,5 +1,6 @@
 const axios = require('axios');
 const chartjs = require('chart.js');
+import { Sidebar } from './sidebar.js';
 
 export var Config = (function() {
     // = Public =
@@ -7,13 +8,8 @@ export var Config = (function() {
     var input_name = $('#input-name');
     var input_dpx = $('#input-dpx');
     var input_ikrum = $('#input-ikrum');
-    var creat_config_button = $('#create-config-button');
-
-    // THL Calibration
-    var thl_calib_button = $('#thl-calib-button');
-    var thl_calib_modal = $('#thl-calib-modal');
-    var thl_calib_progress = $('#thl-calib-progress');
-    var thl_calib_speed_label = $('#thl-calib-speed-label');
+    var create_config_button = $('#create-config-button');
+    var dismiss_config_button =$('#dismiss-config-button');
 
     // Equalization
     var equal_modal = $('#equal-modal');
@@ -22,7 +18,12 @@ export var Config = (function() {
     var equal_discard_button = $('#equal-discard-button');
 
     // Global config state
-    var config_state;
+    var config_state = {
+        config_id: -1,
+        common: false,
+        thl_calib: false,
+        equal: false,
+    }
 
     function set_config_state(state) {
         config_state = state;
@@ -60,137 +61,8 @@ export var Config = (function() {
         }
     }
 
-    // === THL CALIBRATION ===
-    thl_calib_button.on('click', async () => {
-        // Create config if not already done
-        var config_id;
-        if(!config_state.common) {
-            config_id = await write_config();
-            if (config_id == undefined) return;
-
-            config_state.config_id = config_id;
-            config_state.common = true;
-        } else {
-            config_id = config_state.config_id;
-        }
-
-        // TODO
-        // Check if calibration for config already exists
-        // if so, ask to overwrite
-
-        // Start calibration
-        await axios.get(window.url + 'measure/thl_calib').then((res) => {
-            thl_calib_modal.modal('show');
-        }).catch((err) => {
-            return;
-        });
-
-        // Create chart
-        const config = {
-            type: 'line',
-            data: undefined,
-            options: {
-                showLine: false,
-                animation : false,
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: "ADC",
-                            font: {
-                                size: 20,
-                            },    
-                        },
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: "Volt",
-                            font: {
-                                size: 20,
-                            },    
-                        },
-                    },
-                },
-                layout: {
-                    padding: 30,
-                },
-                plugins: {
-                    legend: {
-                        display: false,
-                    },
-                },
-            },
-        }; 
-
-        const thl_calib_chart = new chartjs.Chart(
-            document.getElementById('thl-calib-chart'),
-            config
-        );
-        
-        // Loop while generator alive
-        var run_loop = true;
-        let volt = [];
-        let ADC = [];
-        let cnt = 0;
-        let start_time = Date.now();
-        while (run_loop) {
-            await axios.post(window.url + 'measure/thl_calib').then(function (res) {
-                // Update only on 10th frame
-                if (!(cnt % 10)) {
-                    volt.push(res.data.Volt);
-                    ADC.push(res.data.ADC);
-        
-                    let data = {
-                        labels: ADC,
-                        datasets: [{
-                            data: volt,
-                        }],
-                    }
-                    thl_calib_chart.data = data;
-                    thl_calib_chart.update();
-
-                    let current_progress = res.data.ADC / 8192. * 100;
-                    current_progress = current_progress.toFixed(2);
-                    thl_calib_progress.css("width", current_progress + "%")
-                    .attr("aria-valuenow", current_progress)
-                    .text(current_progress + "%");
-
-                    let fps = cnt / ((Date.now() - start_time) / 1000.);
-                    let eta = ((8192. - cnt) / fps).toFixed(2);
-                    fps = fps.toFixed(2);
-                    thl_calib_speed_label.text(`FPS: ${fps} 1/s, ETA: ${eta} s`);
-                }
-            }).catch((err) => {
-                run_loop = false;
-            });
-            cnt++;
-
-            // DEBUG
-            /*
-            if(cnt > 100) {
-                break;
-            }
-            */
-        }
-
-        // Write to database
-        let thl_calib_params = {
-            config_id: config_id,
-            volt: volt,
-            ADC: ADC,
-        }
-
-        axios.post(window.url + 'config/new_thl_calib', thl_calib_params).then((res) => {
-            console.log('res');
-        });
-
-        config_state.thl_calib = true;
-    });
-
     // === EQUALIZATION ===
     equal_button.on('click', async () => {
-        console.log('Click');
         var config_id;
         if(!config_state.common) {
             config_id = await write_config();
@@ -270,18 +142,41 @@ export var Config = (function() {
         config_state.equal = true;
     });
 
+    create_config_button.on('click', () => {
+        write_config();
+
+        // Jump back to previous page
+        Sidebar.jump_back(  window.app_state );
+    });
+
+    dismiss_config_button.on('click', () => {
+        // Jump back to previous page
+        Sidebar.jump_back(  window.app_state );
+    });
+
     function on_init() {
-        console.log("Config is ready");
+        // Create initial config name
         if (window.dpx_state.dpx_id != undefined) {
             input_dpx.val(window.dpx_state.dpx_id);
+
+            // If initial name already in db, 
+            // increment its index until the name is unique
+            axios.get(window.url + 'config/get_all').then((res) => {
+                let configs = res.data.map(config => {return config.name});
+                let start_name = `config_dpx${input_dpx.val()}`;
+                let name = start_name;
+                let idx = 0;
+                while(configs.includes(name)) {
+                    // Increment name index by 1
+                    name = start_name + "_" + String(idx);
+                    idx++;
+                }
+                input_name.val( name );
+            }).catch((err) => {
+                // No configs found
+                input_name.val(`config_dpx${input_dpx.val()}`);
+            });
         }
-    
-        set_config_state({
-            config_id: -1,
-            common: false,
-            thl_calib: false,
-            equal: false,
-        });
     }
 
     // = Private =

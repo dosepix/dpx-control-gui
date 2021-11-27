@@ -68,15 +68,31 @@ export var Sidebar = (function() {
     }
 
     function show_container(name) {
+        console.log(window.app_state.stack);
         hideAll();
-        console.log(name);
 
         // Show container
         show(containers[name]);
 
+        // Current app state
+        // window.app_state.pop_state();
+        window.app_state.push_state(name);
+
         // Execute init if available
         if (Object.keys(pages).includes(name)) {
-            console.log(pages[name]);
+            pages[name].on_init();
+        }
+    }
+
+    function jump_back() {
+        window.app_state.pop_state();
+        let name = window.app_state.get_state();
+        hideAll();
+
+        // Show container
+        show(containers[name]);
+
+        if (Object.keys(pages).includes(name)) {
             pages[name].on_init();
         }
     }
@@ -245,6 +261,7 @@ export var Sidebar = (function() {
         hideAll: hideAll,
         show: show,
         show_container: show_container,
+        jump_back: jump_back,
     }
 })();
 

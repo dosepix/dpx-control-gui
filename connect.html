@@ -39,6 +39,17 @@
         </div>
     </div>
 
+    <!-- THL Calibration -->
+    <div class="row mb-3" id="thl-calib-div">
+        <label for="config-input-group" class="col-sm-2 col-form-label">THL Calib</label>
+        <div class="col-sm-8">
+            <select class="form-control" id="thl-calib-select"></select>
+        </div>
+        <div class="col-sm-2">
+            <button class="btn btn-primary" type="button" id="thl-calib-new-button" style="width: 100%;">New</button>
+        </div>
+    </div>
+
     <!-- Connect -->
     <button class="btn btn-primary" type="button" id="connect-button">Connect</button>
 </form>
@@ -61,5 +72,8 @@
     </div>
 </div>
 
+<div id="thl-calib-modal-include"></div>
+
 <!-- Has to be at the end of the script -->
+<script>$(function(){$("#thl-calib-modal-include").load("thl_calib.html"); });</script>
 <script src="./scripts/connect.js" type='module'></script>

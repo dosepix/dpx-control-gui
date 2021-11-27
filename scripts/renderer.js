@@ -2,12 +2,21 @@ window.url = 'http://127.0.0.1:5000/';
 
 // App state
 window.app_state = {
-    state: "main",
+    stack: [],
     get state() {
-        return this.state;
+        return this.stack[this.stack.length - 1];
     },
-    set state(value) {
-        this.state = value;
+    get_state: function get_state() {
+        return this.stack[this.stack.length - 1];
+    },
+    clear_state: function clear_state() {
+        self.stack = [];
+    },
+    push_state: function push_state(state) {
+        this.stack.push(state);
+    },
+    pop_state: function pop_state() {
+        return this.stack.pop();
     }
 }
 
