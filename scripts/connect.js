@@ -3,6 +3,7 @@ const axios = require('axios');
 import { Sidebar } from './sidebar.js';
 import { Main } from './main.js';
 import { Thl_calibration } from './thl_calib.js';
+import { Equalization } from './equalization.js';
 
 export var Connect = (function() {
     // = Private =
@@ -22,6 +23,12 @@ export var Connect = (function() {
     var thl_calib_div = $("#thl-calib-div");
     var thl_calib_select = document.querySelector('#thl-calib-select');
     var thl_calib_new_button = document.querySelector('#thl-calib-new-button');
+    var thl_calib_reset_button = $('#thl-calib-reset-button');
+
+    // === Equalization ===
+    var equal_select = document.querySelector('#equal-select');
+    var equal_new_button = document.querySelector('#equal-new-button');
+    var equal_reset_button = $('#equal-reset-button');
 
     // === Connect ===
     var connect_button = $("#connect-button");
@@ -272,6 +279,26 @@ export var Connect = (function() {
         }
         Thl_calibration.show_modal();
     }
+
+    // Create new equalization
+    equal_new_button.onclick = async function() {
+        // Connect if not already connected
+        if (!(await is_connected())) {
+            await establish_connection();
+        }
+        Equalization.show_modal();
+    }
+
+    // === Reset buttons ===
+    thl_calib_reset_button.on('click', () => {
+        thl_calib_select.value = "";
+        window.dpx_state.thl_calib_id = undefined;
+    });
+
+    equal_reset_button.on('click', () => {
+        equal_select.value = "";
+        window.dpx_state.equal_id = undefined;
+    });
 
     // === Popovers ===
     // Attach error popovers to elements

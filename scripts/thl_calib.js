@@ -83,19 +83,24 @@ export var Thl_calibration = (function() {
         var run_loop = true;
         let volt = [];
         let ADC = [];
+        let volt_show = [];
+        let ADC_show = [];
         let cnt = 0;
         let start_time = Date.now();
         while (run_loop) {
             await axios.post(window.url + 'measure/thl_calib').then(function (res) {
+                volt.push(res.data.Volt);
+                ADC.push(res.data.ADC);
+
                 // Update only on 10th frame
                 if (!(cnt % 10)) {
-                    volt.push(res.data.Volt);
-                    ADC.push(res.data.ADC);
+                    volt_show.push(res.data.Volt);
+                    ADC_show.push(res.data.ADC);
         
                     let data = {
-                        labels: ADC,
+                        labels: ADC_show,
                         datasets: [{
-                            data: volt,
+                            data: volt_show,
                         }],
                     }
                     thl_calib_chart.data = data;

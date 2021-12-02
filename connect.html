@@ -8,7 +8,7 @@
             <select class="form-control" id="port-select"></select>
         </div>
         <div class="col-sm-2">
-            <button class="btn btn-primary" type="button" id="port-select-refresh-button" style="width: 100%;">Refresh</button>
+            <button class="btn btn-outline-primary" type="button" id="port-select-refresh-button" style="width: 100%;"><span class="bi-arrow-clockwise"></span></button>
         </div>
     </div>
 
@@ -28,6 +28,7 @@
         </div>
     </div>
 
+    <hr/>
     <!-- Load Config -->
     <div class="row mb-3">
         <label for="config-input-group" class="col-sm-2 col-form-label">Config</label>
@@ -35,18 +36,31 @@
             <select class="form-control" id="config-select"></select>
         </div>
         <div class="col-sm-2">
-            <button class="btn btn-primary" type="button" id="config-select-button" style="width: 100%;">New</button>
+            <button class="btn btn-outline-primary" type="button" id="config-select-button" style="width: 100%;"><span class="bi-plus-circle"></span></button>
         </div>
     </div>
 
     <!-- THL Calibration -->
     <div class="row mb-3" id="thl-calib-div">
-        <label for="config-input-group" class="col-sm-2 col-form-label">THL Calib</label>
+        <label for="thl-calib-input-group" class="col-sm-2 col-form-label">THL Calib</label>
         <div class="col-sm-8">
             <select class="form-control" id="thl-calib-select"></select>
         </div>
-        <div class="col-sm-2">
-            <button class="btn btn-primary" type="button" id="thl-calib-new-button" style="width: 100%;">New</button>
+        <div class="btn-group col-sm-2" role="group">
+            <button class="btn btn-outline-secondary" type="button" id="thl-calib-reset-button" style="width: 100%;"><span class="bi-x-circle"></span></button>
+            <button class="btn btn-outline-primary" type="button" id="thl-calib-new-button" style="width: 100%;"><span class="bi-plus-circle"></span></button>
+        </div>
+    </div>
+
+    <!-- THL Calibration -->
+    <div class="row mb-3" id="thl-calib-div">
+        <label for="equal-input-group" class="col-sm-2 col-form-label">Equalization</label>
+        <div class="col-sm-8">
+            <select class="form-control" id="equal-select"></select>
+        </div>
+        <div class="btn-group col-sm-2" role="group">
+            <button class="btn btn-outline-secondary" type="button" id="equal-reset-button" style="width: 100%;"><span class="bi-x-circle"></span></button>
+            <button class="btn btn-outline-primary" type="button" id="equal-new-button" style="width: 100%;"><span class="bi-plus-circle"></span></button>
         </div>
     </div>
 
@@ -54,7 +68,7 @@
     <button class="btn btn-primary" type="button" id="connect-button">Connect</button>
 </form>
 
-<!-- Alert Modal -->          
+<!-- Alert Modal -->
 <div class="modal" tabindex="-1" id="alert-modal" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -73,7 +87,9 @@
 </div>
 
 <div id="thl-calib-modal-include"></div>
+<div id="equal-modal-include"></div>
 
 <!-- Has to be at the end of the script -->
 <script>$(function(){$("#thl-calib-modal-include").load("thl_calib.html"); });</script>
+<script>$(function(){$("#equal-modal-include").load("equalization.html"); });</script>
 <script src="./scripts/connect.js" type='module'></script>
