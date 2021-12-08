@@ -4,10 +4,20 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Equalization</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" id="equal-cross-button"></button>
             </div>
 
-            <div class="modal-body" id="equal-modal-body">
+            <div class="modal-body">
+                <div class="row g-3">
+                    <div class="col-md-2">
+                        <label>Name</label>
+                    </div>
+                    <div class="col-md-10">
+                        <input class="form-control" type="text" id="equal-name-input"/>
+                    </div>
+                </div>
+
+                <div id="equal-modal-body"></div>
             </div>
 
             <div class="modal-footer">

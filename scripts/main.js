@@ -20,6 +20,8 @@ export var Main = (function() {
 
     // === CONNECT ===
     connect_card.onclick = async function() {
+        Sidebar.show_container('connect');
+        /*
         if(window.dpx_connected) {
             // Disconnect DPX
             Connect.disconnect();
@@ -27,6 +29,7 @@ export var Main = (function() {
         } else {
             Sidebar.show_container('connect');
         }
+        */
     }
 
     function connection_state() {
@@ -85,6 +88,3 @@ export var Main = (function() {
         connection_state: connection_state,
     }
 })();
-
-$( document ).ready(async () => {
-});

@@ -1,7 +1,7 @@
 {
   "name": "dpx_gui",
   "version": "0.0.1",
-  "description": "GUI for dpx_func_python via dpx_api",
+  "description": "GUI for dpx_control via dpx_api",
   "main": "scripts/index.js",
   "scripts": {
     "start": "electron .",

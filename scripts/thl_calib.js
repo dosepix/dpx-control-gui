@@ -6,10 +6,13 @@ export var Thl_calibration = (function() {
     var thl_calib_button = $('#thl-calib-button');
     var thl_calib_modal = $('#thl-calib-modal');
     thl_calib_modal.appendTo("body");
+
     var thl_calib_progress = $('#thl-calib-progress');
-    var thl_calib_speed_label = $('#thl-calib-speed-label');
+    var thl_calib_fps_label = $('#thl-calib-fps-label');
+    var thl_calib_eta_label = $('#thl-calib-eta-label');
     var thl_calib_start_button = $('#thl-calib-start-button');
     var thl_calib_discard_button = $('#thl-calib-discard-button');
+    var thl_calib_cross_button = $('#thl-calib-cross-button');
     var thl_calib_name_input = $('#thl-calib-name-input');
 
     // Chart
@@ -81,6 +84,7 @@ export var Thl_calibration = (function() {
 
         // Loop while generator alive
         var run_loop = true;
+        var error = false;
         let volt = [];
         let ADC = [];
         let volt_show = [];
@@ -97,6 +101,7 @@ export var Thl_calibration = (function() {
                     volt_show.push(res.data.Volt);
                     ADC_show.push(res.data.ADC);
         
+                    // Update chart
                     let data = {
                         labels: ADC_show,
                         datasets: [{
@@ -106,19 +111,27 @@ export var Thl_calibration = (function() {
                     thl_calib_chart.data = data;
                     thl_calib_chart.update();
 
+                    // Update progress shown in status bar
                     let current_progress = res.data.ADC / 8192. * 100;
                     current_progress = current_progress.toFixed(2);
                     thl_calib_progress.css("width", current_progress + "%")
-                    .attr("aria-valuenow", current_progress)
-                    .text(current_progress + "%");
+                        .attr("aria-valuenow", current_progress)
+                        .text(current_progress + "%");
 
+                    // Get readouts per second and display current value
                     let fps = cnt / ((Date.now() - start_time) / 1000.);
                     let eta = ((8192. - cnt) / fps).toFixed(2);
                     fps = fps.toFixed(2);
-                    thl_calib_speed_label.text(`FPS: ${fps} 1/s, ETA: ${eta} s`);
+                    thl_calib_fps_label.text(`FPS: ${fps} 1/s`);
+                    thl_calib_eta_label.text(`ETA: ${eta} s`);
                 }
             }).catch((err) => {
                 run_loop = false;
+
+                // When measurement is suddenly stopped, an error is thrown
+                if(err.toJSON().status == 500) {
+                    error = true;
+                }
             });
             cnt++;
 
@@ -130,6 +143,16 @@ export var Thl_calibration = (function() {
             */
         }
 
+        // Return if error took place during measurement
+        if (error) {
+            return;
+        }
+
+        // Loop finished, set status bar to 100 %
+        thl_calib_progress.css("width", 100 + "%")
+            .attr("aria-valuenow", 100)
+            .text(100 + "%");
+
         // Write to database
         let thl_calib_params = {
             name: name,
@@ -139,21 +162,38 @@ export var Thl_calibration = (function() {
         }
 
         await axios.post(window.url + 'config/new_thl_calib', thl_calib_params).then((res) => {
+            // Set calibration to newly created one
             window.dpx_state.thl_calib_id = res.data.thl_calib_id;
+
             console.log(window.dpx_state);
             // Enable start button
             thl_calib_start_button.prop("disabled", false);
+
+            // Update connect screen
+            Connect.update();
         });
     }
 
     thl_calib_start_button.on('click', async () => {
         // Check if name is entered and already in db
         let name = thl_calib_name_input.val();
+        if (!name | name.length === 0) {
+            thl_calib_name_input.popover('dispose');
+            thl_calib_name_input.popover(popover_options_empty);
+            thl_calib_name_input.popover('show');
+            return;
+        } 
+
+        // Check if THL calib with selected name is already in db
         axios.get(window.url + `config/get_thl_calib_ids_names?config_id=${window.dpx_state.config_id}`).then((res) => {
             let names = res.data.map(n => n.name)
             if (!names | (names.includes(name))) {
+                thl_calib_name_input.popover('dispose');
+                thl_calib_name_input.popover(popover_options_in_use);
+                thl_calib_name_input.popover('show');
                 console.log("Name already taken");
             } else {
+                thl_calib_name_input.popover('hide');
                 measure(window.dpx_state.config_id, thl_calib_name_input.val());
             }
         }).catch((err) => {
@@ -162,16 +202,87 @@ export var Thl_calibration = (function() {
         });
     });
 
-    // Close modal and destroy measurement if still running
-    thl_calib_discard_button.on('click', () => {
+    function stop_measurement() {
+        thl_calib_start_button.prop("disabled", false);
+
+        // Stop measurement and close modal
         axios.delete(window.url + 'measure/thl_calib').then((res) => {
             thl_calib_modal.modal('hide');
-            Connect.update(window.dpx_state.thl_calib_id);
+            Connect.update();
         });
+    }
+
+    // Close modal and destroy measurement if still running
+    thl_calib_discard_button.on('click', () => {
+        stop_measurement();
     });
+
+    thl_calib_cross_button.on('click', () => {
+        stop_measurement();
+    });
+
+    // === Popovers ===
+    var popover_options_in_use = {
+        title: "Error",
+        content: "Name already in use! Please choose a different name",
+        trigger: "manual",
+        placement: "right",
+        container: 'body'
+    }
+
+    var popover_options_empty = {
+        title: "Error",
+        content: "Field cannot be empty. Please provide a name",
+        trigger: "manual",
+        placement: "right",
+        container: 'body'
+    }
+
+    thl_calib_name_input.popover(popover_options_in_use);
+    thl_calib_name_input.popover('hide');
+
+    // Hide on input
+    thl_calib_name_input.on('input', () => {
+        thl_calib_name_input.popover('hide');
+    });
+
+    function on_init() {
+        thl_calib_start_button.prop("disabled", false);
+
+        // Reset status bar
+        thl_calib_progress.css("width", 0 + "%")
+            .attr("aria-valuenow", 0)
+            .text(0 + "%");
+
+        // Reset speed labels
+        thl_calib_fps_label.text(`FPS: N/A`);
+        thl_calib_eta_label.text(`ETA: N/A`);
+
+        // Generate initial name in the input field
+        if (window.dpx_state.dpx_id != undefined) {
+            // If initial name already in db, 
+            // increment its index until the name is unique
+            axios.get(window.url + `config/get_thl_calib_ids_names?config_id=${window.dpx_state.config_id}`).then((res) => {
+                let names = res.data.map(n => n.name)
+                let start_name = `thl_calib_dpx${window.dpx_state.dpx_id}`;
+                let name = start_name;
+                let idx = 0;
+                while(names.includes(name)) {
+                    // Increment name index by 1
+                    name = start_name + "_" + String(idx);
+                    idx++;
+                }
+                thl_calib_name_input.val( name );
+            }).catch((err) => {
+                // No configs found
+                thl_calib_name_input.val(`thl_calib_dpx${window.dpx_state.dpx_id}`);
+            });
+        }
+    }
 
     return {
         measure: measure,
         show_modal: show_modal,
+        on_init: on_init,
     }
 })();
