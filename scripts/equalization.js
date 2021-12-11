@@ -13,7 +13,8 @@ export var Equalization = (function() {
         equal_modal.modal('show');
     }
 
-    var interrupt_measure = false;
+    // Init with true, as measurement is not running
+    var interrupt_measure = true;
     async function measure() {
         await axios.get(window.url + 'measure/equal').then(function (res) {
             console.log(res);
@@ -69,10 +70,10 @@ export var Equalization = (function() {
                     case 'THL_pre_start':
                         console.log('THL pre start');
                         // Label
-                        labels['pre00'] = document.createElement('label');
-                        equal_modal_body.appendChild(labels['pre00']);
-                        $(labels['pre00']).text('Starting Measurement');
-                        status.last_label_id = 'pre00';
+                        labels['pre_00'] = document.createElement('label');
+                        equal_modal_body.appendChild(labels['pre_00']);
+                        $(labels['pre_00']).text('Starting Measurement');
+                        status.last_label_id = 'pre_00';
                         break;
 
                     case 'THL_start':
@@ -83,16 +84,25 @@ export var Equalization = (function() {
                         $(labels['main']).text('Starting Measurement');
                         status.last_label_id = 'main';
                         break;
-    
+
                     case 'THL_pre_loop_start':
                         if (res.data.status == '3f') {
-                            labels['pre3f'] = document.createElement('label');
-                            equal_modal_body.appendChild(labels['pre3f']);
-                            status.last_label_id = 'pre3f';    
+                            labels['pre_3f'] = document.createElement('label');
+                            equal_modal_body.appendChild(labels['pre_3f']);
+                            status.last_label_id = 'pre_3f';
+
+                            // Set 0f bar to 100%
+                            $(status_bars[status.last_statusbar_id]).css("width", 100 + "%")
+                                .attr("aria-valuenow", 100)
+                                .text(100 + "%");
                         }
                     case 'THL_loop_start':
                         // Status bar
                         if (status.last_label_id == 'main') {
+                            // Set 3f bar to 100%
+                            $(status_bars[status.last_statusbar_id]).css("width", 100 + "%")
+                                .attr("aria-valuenow", 100)
+                                .text(100 + "%");
                             status.last_statusbar_id = `main`;
                         } else {
                             status.last_statusbar_id = `pre_${res.data.status}`;
@@ -104,7 +114,7 @@ export var Equalization = (function() {
                         equal_modal_body.appendChild(status_bars[status.last_statusbar_id]);
 
                         $(status_bars[status.last_statusbar_id]).css("width", 0 + "%")
-                            .attr("aria-valuenow", 0)
+                            .attr("aria-valuenow", 0);
 
                         if (status.last_label_id == 'main') {
                             last_text = `Final scan`;
@@ -123,14 +133,32 @@ export var Equalization = (function() {
                         dots_num = cnt % 4;
                         $(labels[status.last_label_id]).text(last_text + '.'.repeat(dots_num));
 
-                        let current_progress_pre = res.data.status * 100;
-                        current_progress_pre = current_progress_pre.toFixed( 2 );
-                        // status_bar[0].setAttribute('aria-valuenow', res.data.status * 100);
-                        $(status_bars[status.last_statusbar_id]).css("width", current_progress_pre + "%")
-                            .attr("aria-valuenow", current_progress_pre)
-                            .text(current_progress_pre + "%");
+                        let current_progress = res.data.status * 100;
+                        current_progress = current_progress.toFixed( 2 );
+                        $(status_bars[status.last_statusbar_id]).css("width", current_progress + "%")
+                            .attr("aria-valuenow", current_progress)
+                            .text(current_progress + "%");
                         break;
+
+                    case 'finished':
+                        $(status_bars[status.last_statusbar_id]).css("width", 100 + "%")
+                            .attr("aria-valuenow", 100)
+                            .text(100 + "%");
     
+                        
+                        let store_data = {
+                            config_id: window.dpx_state.config_id,
+                            name: equal_name_input.val(),
+                            v_tha: response.data.THL,
+                            confbits: response.data.confMask,
+                            pixeldac: response.data.pixelDAC,
+                        }
+                        
+                        axios.post(window.url + 'config/new_equal', store_data).then(function (res) {
+                            console.log(res);
+                            window.dpx_state.equal_id = res.data.equal_id;
+                        });
+
                     default:
                         break;
                 }
@@ -141,7 +169,6 @@ export var Equalization = (function() {
         // Sucessfully equalized
         console.log(response.data);
         equal_start_button.prop("disabled", false);
-        config_state.equal = true;
     }
 
     equal_start_button.on("click", async () => {
@@ -182,28 +209,44 @@ export var Equalization = (function() {
         measure();
     });
 
-    // Close modal and destroy measurement if still running
-    equal_discard_button.on('click', () => {
-        interrupt_measure = true;
-    });
-
     function stop_measurement() {
         equal_start_button.prop("disabled", false);
 
-        // Stop measurement and close modal
+        // Stop measurement and clear and close modal
         axios.delete(window.url + 'measure/thl_calib').then((res) => {
             equal_modal.modal('hide');
+
+            // Clear modal
+            var div = document.getElementById('equal-modal-body');
+            while(div.firstChild){
+                div.removeChild(div.firstChild);
+            }            
+
             Connect.update();
         });
     }
 
     // Discard buttons
     equal_discard_button.on('click', () => {
-        stop_measurement();
+        if (!interrupt_measure) {
+            if (confirm("Do you really want to interrupt the measurement?")) {
+                interrupt_measure = true;
+                stop_measurement();
+            }
+        } else {
+            equal_modal.modal('hide');
+        }
     });
 
     equal_cross_button.on('click', () => {
-        stop_measurement();
+        if (!interrupt_measure) {
+            if (confirm("Do you really want to interrupt the measurement?")) {
+                interrupt_measure = true;
+                stop_measurement();
+            }
+        } else {
+            equal_modal.modal('hide');
+        }
     });
 
     // === Popovers ===
@@ -231,6 +274,7 @@ export var Equalization = (function() {
         equal_name_input.popover('hide');
     });
 
+    // = Init function =
     function on_init() {
         equal_start_button.prop("disabled", false);
 

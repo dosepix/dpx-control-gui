@@ -11,7 +11,7 @@ export var Connect = (function() {
 
     // === Port Selection ===
     var port_select_refresh_button = $("#port-select-refresh-button");
-    var port_select = document.querySelector('#port-select'); // $("#port-select");
+    var port_select = document.querySelector('#port-select');
     var baud_input = document.querySelector("#baud-input");
     var dpx_input = $("#dpx-input");
 
@@ -59,28 +59,18 @@ export var Connect = (function() {
 
     async function establish_connection(container_name=undefined) {
         if (!window.dpx_connected) {
-            // Port is required
-            if (port_select.value === null) {
-                // TODO: Change text
-                alert_modal.modal('show');
-                return;
-            } 
-
-            await axios.post(window.url + 'control/set_port', {"port": port_select.value})
-            .then((res) => {});
+            await axios.post(window.url + 'control/set_port', {"port": port_select.value}).then((res) => {});
 
             // Baud rate is required
             if (!baud_input.value) {
                 console.log("Baud rate is missing!");
                 $('#baud-input').popover('show');
-                // alert_modal.modal('show');
                 return;
             }
 
-            await axios.post(window.url + 'control/set_baud', {"baud": baud_input.value})
-            .then((res) => {
+            await axios.post(window.url + 'control/set_baud', {"baud": baud_input.value}).then((res) => {
                 // console.log(res);
-                }).catch((error) => {});
+            }).catch((error) => {});
 
             // Load config, otherwise use standard values
             /*
@@ -92,38 +82,48 @@ export var Connect = (function() {
             connect_button.text("Connecting...");
             connect_button.prop('disabled', true);
 
+            // Disable certain fields
+            select_main_fields(false);
+            select_config_fields(false);
+
             // TODO: Requires timeout!
             await axios.post(url + 'control/connect').then(async (res) => {
-                // Visually show connection approach
+                // TODO: Visually show connection approach
 
+                // Change button to disconnect
                 await is_connected();
                 connect_button.text("Disconnect");
                 connect_button.attr('class', 'btn btn-danger');
                 connect_button.prop('disabled', false);
-        
+
                 // Return to main screen if sucessfully connected
                 Main.connection_state();
                 if (container_name != undefined) {
                     Sidebar.show_container( container_name );
                 }
+
+                select_config_fields(true);
             }).catch((error) => {
                 // Cannot connect!
                 // Enable connection
                 connect_button.text("Connect");
                 connect_button.prop('disabled', false);        
-
+                select_main_fields(true);
+                select_config_fields(true);
+    
                 let err = error.toJSON().status;
                 switch(err) {
                     case 503:
+                        // Permission denied
                         // Ensure popover is only created once
                         connect_button.popover('show');
-                    
                         console.log("Permission denied");
-                        // Permission denied
                         break;
+
                     case 400:
                         // Baud rate or port missing
                         break;
+
                     default:
                         console.log(error.toJSON());
                 }
@@ -133,6 +133,8 @@ export var Connect = (function() {
             disconnect();
             connect_button.text("Connect");
             connect_button.attr('class', 'btn btn-primary')
+            select_main_fields(true);
+            select_config_fields(true);
         }
     }
 
@@ -177,6 +179,8 @@ export var Connect = (function() {
         Sidebar.show_container( 'config' );
     });
 
+    // === SELECTION ===
+    // Enable selection
     function enable_select(select, new_button, reset_button) {
         select.disabled = false;
         select.style.opacity = 1;
@@ -185,6 +189,7 @@ export var Connect = (function() {
         reset_button.prop('disabled', false);
     }
 
+    // Disable selection
     function disable_select(select, new_button, reset_button, text) {
         // Clear thl calib select
         for(let idx=0; idx < select.options.length; idx) {
@@ -201,6 +206,25 @@ export var Connect = (function() {
         reset_button.prop('disabled', true);
     }
 
+    function select_main_fields(sel) {
+        $(port_select).prop('disabled', !sel);
+        port_select_refresh_button.prop('disabled', !sel);
+        $(baud_input).prop('disabled', !sel);
+        dpx_input.prop('disabled', !sel);
+    }
+
+    function select_config_fields(sel) {
+        $(config_select).prop('disabled', !sel);
+        config_select_button.prop('disabled', !sel);
+        $(thl_calib_select).prop('disabled', !sel);
+        $(thl_calib_new_button).prop('disabled', !sel);
+        thl_calib_reset_button.prop('disabled', !sel);
+        $(equal_select).prop('disabled', !sel);
+        $(equal_new_button).prop('disabled', !sel);
+        equal_reset_button.prop('disabled', !sel);
+    }
+
+    // === FIND ===
     // Get configs from db and set options in selection
     async function find_configs(dpx_number) {
         // Clear config select
@@ -413,13 +437,16 @@ export var Connect = (function() {
     // Call on init
     async function on_init() {
         console.log("Connect init");
-        if (await is_connected()) {
-            connect_button.text("Disconnect");
-            connect_button.attr('class', 'btn btn-danger');
-        }
-
         // Scan for ports
-        Connect.get_ports();
+        get_ports();
+
+        await is_connected().then((res) => {
+            if (res) {
+                connect_button.text("Disconnect");
+                connect_button.attr('class', 'btn btn-danger');
+                select_main_fields(false);
+            }
+        });
 
         // Show available configs
         window.dpx_state.dpx_id = dpx_input.val();

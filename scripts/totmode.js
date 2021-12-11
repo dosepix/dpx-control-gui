@@ -6,6 +6,7 @@ export var Totmode = (function() {
     // = Private =
     var input_fields = document.querySelector('#input-fields');
     var start_button = $('#start-button');
+    var input_name = $('#input-name');
 
     // ToT range
     var tot_range_input = document.querySelector('#tot-range-input');
@@ -19,6 +20,10 @@ export var Totmode = (function() {
     var pixel_select = $('#pixel-select');
     var pixel_select_button = $('#pixel-select-button');
     var pixel_select_modal = $('#pixel-select-modal');
+
+    // Duration
+    var select_time = $('#select-time');
+    var input_time = $('#input-time');
 
     // Status variables
     var measurement_running = false;
@@ -42,30 +47,6 @@ export var Totmode = (function() {
         tot_curr = tot_range_slider.value;
     });
 
-    function getRandomInt(min, max) {
-        min = Math.ceil(min);
-        max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
-    }  
-
-    function data_generator() {
-        let labels = Array.from({length: 100}, (x, i) => i);
-        let rand = [];
-        for (let i=0; i < 100; i++) {
-            rand.push( 0 ); // getRandomInt(0, 100) );
-        }
-        let data = {
-            labels: labels,
-            datasets: [{
-                barPercentage: 1,
-                data: rand,
-            }],
-        }
-        return data;
-    }
-
-    let data = data_generator();
-
     const chartAreaBorder = {
         id: 'chartAreaBorder',
         beforeDraw(chart, args, options) {
@@ -82,7 +63,6 @@ export var Totmode = (function() {
 
     const config = {
         type: 'bar',
-        data: data,
         options: {
             animation : false,
             scales: {
@@ -136,6 +116,24 @@ export var Totmode = (function() {
         return await axios.delete(window.url + 'measure/tot');
     }
 
+    // Show pixels
+    pixel_select.on("change", () => {
+        if (pixel_select.val() != "single") {
+            pixel_select_button.hide();
+        } else {
+            pixel_select_button.show();
+        }
+    });
+
+    // Duration
+    select_time.on("change", () => {
+        if (select_time.val() == "Infinite") {
+            input_time.prop('disabled', true);
+        } else {
+            input_time.prop('disabled', false);
+        }
+    });
+
     async function get_frame() {
         // Show only selected pixels
         if (pixel_select.val() == 'single') {
@@ -154,14 +152,6 @@ export var Totmode = (function() {
             console.log('Start measurement');
             // Update plot in a specified interval to reduce CPU load
 
-            // Example
-            /* interval = setInterval(() => {
-                let idx = getRandomInt(0, 99);
-                data.datasets[0].data[idx] += getRandomInt(1, 10);
-                config.data = data;
-                myChart.update(config);
-            }, 1000); */
-
             // Start measurement
             let res = await start_measurement();
             measurement_running = true;
@@ -169,8 +159,10 @@ export var Totmode = (function() {
             start_button[0].innerText = "Stop";
 
             // Measure until stop button press
-            while (true & measurement_running) {
+            while (measurement_running) {
                 let frame = await get_frame();
+
+                // Select ToT range
                 let l = frame.data.bins.slice(0, tot_curr);
                 let d = frame.data.frame.slice(0, tot_curr);
 
@@ -200,6 +192,31 @@ export var Totmode = (function() {
     });
 
     function on_init() {
+        // Pixel select
+        if (pixel_select.val() != "single") {
+            pixel_select_button.hide();
+        } else {
+            pixel_select_button.show();
+        }
+
+        // Generate initial name in the input field
+        // If initial name already in db, 
+        // increment its index until the name is unique
+        axios.get(window.url + `measure/get_meas_ids_names?user_id=${window.current_user.id}&mode=tot`).then((res) => {
+            let names = res.data.map(n => n.name)
+            let start_name = `tot_meas${window.dpx_state.dpx_id}`;
+            let name = start_name;
+            let idx = 0;
+            while(names.includes(name)) {
+                // Increment name index by 1
+                name = start_name + "_" + String(idx);
+                idx++;
+            }
+            input_name.val( name );
+        }).catch((err) => {
+            // No configs found
+            input_name.val('tot_meas');
+        });
     }
 
     // Public

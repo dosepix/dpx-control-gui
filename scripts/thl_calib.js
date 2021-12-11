@@ -70,11 +70,13 @@ export var Thl_calibration = (function() {
         );
     }
 
+    var run_measurement = false;
     async function measure(config_id, name) {
         console.log(config_id);
         // Start measurement
         try {
             await axios.get(window.url + 'measure/thl_calib');
+            run_measurement = true;
         } catch(err) {
             return;
         }
@@ -83,7 +85,6 @@ export var Thl_calibration = (function() {
         thl_calib_start_button.prop("disabled", true);
 
         // Loop while generator alive
-        var run_loop = true;
         var error = false;
         let volt = [];
         let ADC = [];
@@ -91,7 +92,7 @@ export var Thl_calibration = (function() {
         let ADC_show = [];
         let cnt = 0;
         let start_time = Date.now();
-        while (run_loop) {
+        while (run_measurement) {
             await axios.post(window.url + 'measure/thl_calib').then(function (res) {
                 volt.push(res.data.Volt);
                 ADC.push(res.data.ADC);
@@ -126,7 +127,7 @@ export var Thl_calibration = (function() {
                     thl_calib_eta_label.text(`ETA: ${eta} s`);
                 }
             }).catch((err) => {
-                run_loop = false;
+                run_measurement = false;
 
                 // When measurement is suddenly stopped, an error is thrown
                 if(err.toJSON().status == 500) {
@@ -214,11 +215,25 @@ export var Thl_calibration = (function() {
 
     // Close modal and destroy measurement if still running
     thl_calib_discard_button.on('click', () => {
-        stop_measurement();
+        if (run_measurement) {
+            if (confirm("Do you really want to interrupt the measurement?")) {
+                run_measurement = false;
+                stop_measurement();
+            }
+        } else {
+            thl_calib_modal.modal('hide');
+        }
     });
 
     thl_calib_cross_button.on('click', () => {
-        stop_measurement();
+        if (run_measurement) {
+            if (confirm("Do you really want to interrupt the measurement?")) {
+                run_measurement = false;
+                stop_measurement();
+            }
+        } else {
+            thl_calib_modal.modal('hide');
+        }
     });
 
     // === Popovers ===

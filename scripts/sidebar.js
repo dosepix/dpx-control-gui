@@ -8,6 +8,7 @@ import { Totmode } from './totmode.js';
 export var Sidebar = (function() {
     // = Private =
     // === SIDEBAR BUTTONS & LINKS ===
+    var sidebar = document.querySelector('#sidebar');
     var sidebar_collapse_button = document.querySelector('#sidebar-collapse-button');
     var sidebar_home_link = document.querySelector('#sidebar-home-link');
     var sidebar_connect_link = document.querySelector('#sidebar-connect-link');
@@ -51,7 +52,7 @@ export var Sidebar = (function() {
         totmode: Totmode,
     }
 
-    var contents = document.querySelectorAll('.container');
+    var contents = document.querySelectorAll('.container-fluid');
 
     function hide(element) {
         element.style.display = "none";
@@ -68,6 +69,11 @@ export var Sidebar = (function() {
     }
 
     function show_container(name) {
+        // Don't show container if already shown
+        if (window.app_state.stack[window.app_state.stack.length - 1] == name) {
+            return;
+        }
+
         console.log(window.app_state.stack);
         hideAll();
 
@@ -76,7 +82,9 @@ export var Sidebar = (function() {
 
         // Current app state
         // window.app_state.pop_state();
-        window.app_state.push_state(name);
+        if (window.app_state.stack[window.app_state.stack.length - 1] != name) {
+            window.app_state.push_state(name);
+        }
 
         // Execute init if available
         if (Object.keys(pages).includes(name)) {
@@ -254,6 +262,14 @@ export var Sidebar = (function() {
             change_user_event()
         }
     });
+
+    sidebar_collapse_button.onclick = () => {
+        sidebar.classList.toggle('collapse');
+
+        for (const [name, container] of Object.entries(containers)) {
+            container.classList.toggle('collapse');
+        }
+    }
 
     // = Public =
     return {

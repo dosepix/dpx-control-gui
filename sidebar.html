@@ -1,41 +1,36 @@
 <link href="index.html"/>
 
-<div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" id="sidebar">
-    <div class="d-flex justify-content-between" style="height: 30px;">
-        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-            <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
-            <span class="fs-4">DPX Control</span>
-        </a>
-        <button type="button" class="btn" id="sidebar-collapse-button">
-            <i class="bi bi-arrow-bar-left"></i>
+<div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark sidebar" id="sidebar">
+    <div class="logo-header">
+        <div class="logo-header-name" style="display: flex; align-items: center;">
+            <span style="margin-left: 0.9rem; white-space: nowrap;">DPX Control</span>
+        </div>
+        <button class="logo-header-button" type="button" id="sidebar-collapse-button">
+            <i class="bi-arrow-bar-left"></i>
         </button>
     </div>
+
     <hr> 
-    <ul class="nav nav-pills flex-column mb-auto">
-      <li class="nav-item">
-        <a href="#" id="sidebar-home-link" class="nav-link text-white" aria-current="page">
-          <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"/></svg>
-          Home
-        </a>
-      </li>
-      <li>
-        <a href="#" id="sidebar-connect-link" class="nav-link text-white">
-          <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
-          Connect
-        </a>
-      </li>
-      <li>
-        <a href="#" id="sidebar-measure-link" class="nav-link text-white">
-          <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"/></svg>
-          Measure
-        </a>
-      </li>
-      <li>
-        <a href="#" id="#sidebar-analyze-link" class="nav-link text-white">
-          <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
-          Analyze
-        </a>
-      </li>
+    <ul class="sidebar-list">
+        <li class="sidebar-item" id="sidebar-home-link">
+            <span class="bi-house" style="font-size: 1rem;"></span>
+            <span class="sidebar-item-text">Home</span>
+        </li>
+
+        <li class="sidebar-item" id="sidebar-connect-link">
+            <span class="bi-plug" style="font-size: 1rem;"></span>
+            <span class="sidebar-item-text">Connect</span>
+        </li>
+
+        <li class="sidebar-item" id="sidebar-measure-link">
+            <span class="bi-rulers" style="font-size: 1rem;"></span>
+            <span class="sidebar-item-text">Measure</span>
+        </li>
+
+        <li class="sidebar-item" id="sidebar-analyze-link">
+            <span class="bi-graph-up" style="font-size: 1rem;"></span>
+            <span class="sidebar-item-text">Analyze</span>
+        </li>
     </ul>
     <hr>
 
