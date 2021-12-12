@@ -54,7 +54,7 @@ a, a:hover, a:focus {
     height: 100%;
     width: 15rem; 
     position: fixed; 
-    z-index: auto; 
+    /* z-index: auto; */ 
     top: 0; 
     left: 0;
     overflow-x: hidden; /* Disable horizontal scroll */
@@ -85,6 +85,12 @@ a, a:hover, a:focus {
     transition: 0.5s ease;
 }
 
+.sidebar-item:hover {
+    color: var(--white-color);
+    background-color: darkslategrey;
+    transition: 0.5s ease;
+}  
+
 .sidebar-item-text {
     margin-left: 1rem;
     transition: opacity 0.5s ease;
@@ -96,6 +102,24 @@ a, a:hover, a:focus {
     pointer-events: none;
 }
 
+.sidebar-username {
+    margin-left: 0.7rem;
+    transition: opacity 0.5s ease;
+    color: lightgrey;
+    opacity: 1;
+}
+
+.sidebar.collapse .sidebar-username {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.sidebar-userlogo {
+    border-radius: 50%;
+    border-width: 1px solid white;
+    background-color: white;
+}
+
 .logo-header {
     position: relative;
     margin-bottom: 0.5rem;
@@ -105,6 +129,8 @@ a, a:hover, a:focus {
 }
 
 .logo-header-name {
+    font-size: medium;
+    color: whitesmoke;
     transition: 0.5s ease;
 }
 
@@ -123,6 +149,16 @@ a, a:hover, a:focus {
     border: none;
     cursor: pointer;
     color: lightgray;
+}
+
+.footer {
+    position: absolute;
+    bottom: 1rem;
+}
+
+.dropdown-menu {
+    transition: 0.5s ease;
+    position: absolute;
 }
 
 .card-img-top {
@@ -153,7 +189,7 @@ a, a:hover, a:focus {
     height: 100%; /* Full height (cover the whole page) */
     padding: 2.1rem 1.2rem;
     min-height: 100vh;
-    z-index: auto; /* Specify a stack order in case you're using a different order for other elements */
+    /* z-index: auto; Specify a stack order in case you're using a different order for other elements */
     transition: all 0.5s ease;
 }
 

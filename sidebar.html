@@ -3,7 +3,8 @@
 <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark sidebar" id="sidebar">
     <div class="logo-header">
         <div class="logo-header-name" style="display: flex; align-items: center;">
-            <span style="margin-left: 0.9rem; white-space: nowrap;">DPX Control</span>
+            <img class="logo-header-logo" src="assets/logo.svg" alt="" height="40px">
+            <span style="margin-left: 0.9rem; white-space: nowrap;">DPXcontrol</span>
         </div>
         <button class="logo-header-button" type="button" id="sidebar-collapse-button">
             <i class="bi-arrow-bar-left"></i>
@@ -32,19 +33,18 @@
             <span class="sidebar-item-text">Analyze</span>
         </li>
     </ul>
-    <hr>
 
     <!-- USER MENU -->
-    <div class="dropdown">
-      <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-        <img src="https://github.com/dosepix.png" alt="" width="32" height="32" class="rounded-circle me-2">
-        <strong id='user-name'>Dosepix</strong>
-      </a>
-      <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-        <li><a class="dropdown-item" href="#" id="new-user-link">New user</a></li>
-        <li><hr class="dropdown-divider"></li>
-        <li><a class="dropdown-item" href="#" id="change-user-link">Switch user</a></li>
-      </ul>
+    <div class="dropdown footer">
+        <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+            <img class="sidebar-userlogo" src="https://github.com/dosepix.png" alt="" width="32" height="32">
+            <span class="sidebar-username" id='user-name'>Dosepix</span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+            <li><a class="dropdown-item" href="#" id="new-user-link">New user</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#" id="change-user-link">Switch user</a></li>
+        </ul>
     </div>    
 </div>
 
