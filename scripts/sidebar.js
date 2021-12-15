@@ -1,9 +1,11 @@
 const bootstrap = require('bootstrap');
 const axios = require('axios');
+import { Calibration } from './calibration.js';
 import { Config } from './config.js';
 import { Connect } from './connect.js';
 import { Main } from './main.js';
 import { Totmode } from './totmode.js';
+import { Renderer } from './renderer.js';
 
 export var Sidebar = (function() {
     // = Private =
@@ -37,12 +39,14 @@ export var Sidebar = (function() {
     var connect_container = document.querySelector('#connect-container');
     var totmode_container = document.querySelector('#totmode-container');
     var config_container = document.querySelector('#config-container');
+    var calibration_container = document.querySelector('#calibration-container');
 
     const containers = {
         main: main_container,
         connect: connect_container,
         config: config_container,
         totmode: totmode_container,
+        calibration: calibration_container,
     }
 
     const pages = {
@@ -50,6 +54,7 @@ export var Sidebar = (function() {
         connect: Connect,
         config: Config,
         totmode: Totmode,
+        calibration: Calibration,
     }
 
     var contents = document.querySelectorAll('.container-fluid');
@@ -70,20 +75,20 @@ export var Sidebar = (function() {
 
     function show_container(name) {
         // Don't show container if already shown
-        if (window.app_state.stack[window.app_state.stack.length - 1] == name) {
+        if (Renderer.app_state.stack[Renderer.app_state.stack.length - 1] == name) {
             return;
         }
 
-        console.log(window.app_state.stack);
+        console.log(Renderer.app_state.stack);
         hideAll();
 
         // Show container
         show(containers[name]);
 
         // Current app state
-        // window.app_state.pop_state();
-        if (window.app_state.stack[window.app_state.stack.length - 1] != name) {
-            window.app_state.push_state(name);
+        // Renderer.app_state.pop_state();
+        if (Renderer.app_state.stack[Renderer.app_state.stack.length - 1] != name) {
+            Renderer.app_state.push_state(name);
         }
 
         // Execute init if available
@@ -93,8 +98,8 @@ export var Sidebar = (function() {
     }
 
     function jump_back() {
-        window.app_state.pop_state();
-        let name = window.app_state.get_state();
+        Renderer.app_state.pop_state();
+        let name = Renderer.app_state.get_state();
         hideAll();
 
         // Show container
@@ -141,7 +146,7 @@ export var Sidebar = (function() {
 
         } else {
             // Write user to database
-            axios.post(window.url + 'user/new_user', {"name": new_user_input.value}).then(function (response) {
+            axios.post(Renderer.url + 'user/new_user', {"name": new_user_input.value}).then(function (response) {
                 // Clear input and exit
                 clear_input_modal();
             }).catch(function (error) {
@@ -210,7 +215,7 @@ export var Sidebar = (function() {
     // TODO: What happens if DPX is connected and user is changed?
     // Show modal
     change_user_link.onclick = function() {
-        axios.get(window.url + 'user/get_users').then((res) => {
+        axios.get(Renderer.url + 'user/get_users').then((res) => {
             if (res.status != 200) return;
 
             // Get user list from db
@@ -220,7 +225,7 @@ export var Sidebar = (function() {
             }
 
             // Clear all users from select
-            for(let idx=0; idx < change_user_select.options.length; idx) {
+            for(let idx=0; idx < change_user_select.options.length; idx++) {
                 change_user_select.remove(idx); 
             }
 
@@ -245,11 +250,11 @@ export var Sidebar = (function() {
     // Set username in text and to global variable
     function change_user_event() {
         // TODO: change to correct id
-        window.current_user = {
+        Renderer.current_user = {
             id: -1,
             name: change_user_select.value
         };
-        user_name.innerHTML = window.current_user.name;
+        user_name.innerHTML = Renderer.current_user.name;
         change_user_modal.modal('hide');
     }
 

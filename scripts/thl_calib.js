@@ -1,6 +1,7 @@
 const axios = require('axios');
 const chartjs = require('chart.js');
 import { Connect } from './connect.js';
+import { Renderer } from './renderer.js';
 
 export var Thl_calibration = (function() {
     var thl_calib_button = $('#thl-calib-button');
@@ -75,7 +76,7 @@ export var Thl_calibration = (function() {
         console.log(config_id);
         // Start measurement
         try {
-            await axios.get(window.url + 'measure/thl_calib');
+            await axios.get(Renderer.url + 'measure/thl_calib');
             run_measurement = true;
         } catch(err) {
             return;
@@ -93,7 +94,7 @@ export var Thl_calibration = (function() {
         let cnt = 0;
         let start_time = Date.now();
         while (run_measurement) {
-            await axios.post(window.url + 'measure/thl_calib').then(function (res) {
+            await axios.post(Renderer.url + 'measure/thl_calib').then(function (res) {
                 volt.push(res.data.Volt);
                 ADC.push(res.data.ADC);
 
@@ -162,11 +163,11 @@ export var Thl_calibration = (function() {
             ADC: ADC,
         }
 
-        await axios.post(window.url + 'config/new_thl_calib', thl_calib_params).then((res) => {
+        await axios.post(Renderer.url + 'config/new_thl_calib', thl_calib_params).then((res) => {
             // Set calibration to newly created one
-            window.dpx_state.thl_calib_id = res.data.thl_calib_id;
+            Renderer.dpx_state.thl_calib_id = res.data.thl_calib_id;
 
-            console.log(window.dpx_state);
+            console.log(Renderer.dpx_state);
             // Enable start button
             thl_calib_start_button.prop("disabled", false);
 
@@ -180,26 +181,26 @@ export var Thl_calibration = (function() {
         let name = thl_calib_name_input.val();
         if (!name | name.length === 0) {
             thl_calib_name_input.popover('dispose');
-            thl_calib_name_input.popover(popover_options_empty);
+            thl_calib_name_input.popover(Renderer.popover_options.empty);
             thl_calib_name_input.popover('show');
             return;
         } 
 
         // Check if THL calib with selected name is already in db
-        axios.get(window.url + `config/get_thl_calib_ids_names?config_id=${window.dpx_state.config_id}`).then((res) => {
+        axios.get(Renderer.url + `config/get_thl_calib_ids_names?config_id=${Renderer.dpx_state.config_id}`).then((res) => {
             let names = res.data.map(n => n.name)
             if (!names | (names.includes(name))) {
                 thl_calib_name_input.popover('dispose');
-                thl_calib_name_input.popover(popover_options_in_use);
+                thl_calib_name_input.popover(Renderer.popover_options.in_use);
                 thl_calib_name_input.popover('show');
                 console.log("Name already taken");
             } else {
                 thl_calib_name_input.popover('hide');
-                measure(window.dpx_state.config_id, thl_calib_name_input.val());
+                measure(Renderer.dpx_state.config_id, thl_calib_name_input.val());
             }
         }).catch((err) => {
             // No calibrations exist
-            measure(window.dpx_state.config_id, thl_calib_name_input.val());
+            measure(Renderer.dpx_state.config_id, thl_calib_name_input.val());
         });
     });
 
@@ -207,7 +208,7 @@ export var Thl_calibration = (function() {
         thl_calib_start_button.prop("disabled", false);
 
         // Stop measurement and close modal
-        axios.delete(window.url + 'measure/thl_calib').then((res) => {
+        axios.delete(Renderer.url + 'measure/thl_calib').then((res) => {
             thl_calib_modal.modal('hide');
             Connect.update();
         });
@@ -237,23 +238,7 @@ export var Thl_calibration = (function() {
     });
 
     // === Popovers ===
-    var popover_options_in_use = {
-        title: "Error",
-        content: "Name already in use! Please choose a different name",
-        trigger: "manual",
-        placement: "right",
-        container: 'body'
-    }
-
-    var popover_options_empty = {
-        title: "Error",
-        content: "Field cannot be empty. Please provide a name",
-        trigger: "manual",
-        placement: "right",
-        container: 'body'
-    }
-
-    thl_calib_name_input.popover(popover_options_in_use);
+    thl_calib_name_input.popover(Renderer.popover_options.in_use);
     thl_calib_name_input.popover('hide');
 
     // Hide on input
@@ -274,12 +259,12 @@ export var Thl_calibration = (function() {
         thl_calib_eta_label.text(`ETA: N/A`);
 
         // Generate initial name in the input field
-        if (window.dpx_state.dpx_id != undefined) {
+        if (Renderer.dpx_state.dpx_id != undefined) {
             // If initial name already in db, 
             // increment its index until the name is unique
-            axios.get(window.url + `config/get_thl_calib_ids_names?config_id=${window.dpx_state.config_id}`).then((res) => {
+            axios.get(Renderer.url + `config/get_thl_calib_ids_names?config_id=${Renderer.dpx_state.config_id}`).then((res) => {
                 let names = res.data.map(n => n.name)
-                let start_name = `thl_calib_dpx${window.dpx_state.dpx_id}`;
+                let start_name = `thl_calib_dpx${Renderer.dpx_state.dpx_id}`;
                 let name = start_name;
                 let idx = 0;
                 while(names.includes(name)) {
@@ -290,7 +275,7 @@ export var Thl_calibration = (function() {
                 thl_calib_name_input.val( name );
             }).catch((err) => {
                 // No configs found
-                thl_calib_name_input.val(`thl_calib_dpx${window.dpx_state.dpx_id}`);
+                thl_calib_name_input.val(`thl_calib_dpx${Renderer.dpx_state.dpx_id}`);
             });
         }
     }

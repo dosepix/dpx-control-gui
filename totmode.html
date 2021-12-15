@@ -1,83 +1,91 @@
-<form id="form" class="row g-3">
-    <!-- Chart -->
-    <div class="col-md-10">
-        <canvas id="chart"></canvas>
-    </div>
-
-    <div class="col-md-2">
-        <div class="row g-3">
-            <label for="pixel-select" class="form-label">Show pixels</label>
-            <select class="form-select" id="pixel-select">
-                <option value="all">All</option>
-                <option value="large">Large</option>
-                <option value="small">Small</option>
-                <option value="single">Single</option>
-            </select>
-            <button class="btn btn-primary" type="button" id="pixel-select-button">Pixel select</button>
+<div class="totmode">
+    <form id="form" class="row g-3">
+        <!-- Chart -->
+        <div class="col-md-10">
+            <canvas id="chart"></canvas>
         </div>
-    </div>
 
-    <!-- ToT range -->
-    <div class="col-md-2">
-        <label for="tot-range-slider" class="form-label">Max. ToT</label>
-    </div>  
-    <div class="col-md-8">
-        <input type="range" class="form-range" min="0" max="400" value="400" step=1 id="tot-range-slider">
-    </div>
-    <div class="form-floating col-md-2">
-        <input type="number" class="form-control" id="tot-range-input" value=400 max=400>
-        <label for="tot-range-input">in ToT</label>
-    </div>
-
-    <div id="input-fields" class="row g-3">
-        <!-- Name input row -->
         <div class="col-md-2">
-            <label for="input-name" class="col-sm col-form-label">Name</label>
-        </div>
-        <div class="form-floating col-md-10">
-            <input type="text" class="form-control" id="input-name">
-            <label for="input-name">Measurement name</label>
+            <div class="row g-3">
+                <label for="pixel-select" class="form-label">Show pixels</label>
+                <select class="form-select" id="pixel-select">
+                    <option value="all">All</option>
+                    <option value="large">Large</option>
+                    <option value="small">Small</option>
+                    <option value="single">Single</option>
+                </select>
+                <button class="btn btn-primary" type="button" id="pixel-select-button">Pixel select</button>
+            </div>
+            <br>
+
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="hist-only-check" checked>
+                <label for="hist-only-check" class="form-label">Save only hist.</label>
+            </div>
         </div>
 
-        <!-- Duration input row -->
+        <!-- ToT range -->
         <div class="col-md-2">
-            <label for="select-time" class="col-sm col-form-label" id="input-time-label">Duration</label>
-        </div>
-        <div class="col-md-2">
-            <select class="form-control" id="select-time">
-                <option>Frames</option>
-                <option>Seconds</option>
-                <option>Infinite</option>
-            </select>
-        </div>
+            <label for="tot-range-slider" class="form-label">Max. ToT</label>
+        </div>  
         <div class="col-md-8">
-            <input type="number" class="form-control" id="input-time">
+            <input type="range" class="form-range" min="0" max="400" value="400" step=1 id="tot-range-slider">
         </div>
-    </div>
+        <div class="form-floating col-md-2">
+            <input type="number" class="form-control" id="tot-range-input" value=400 max=400>
+            <label for="tot-range-input">in ToT</label>
+        </div>
 
-    <!-- Start button row -->
-    <div class="row-md-4">
-        <button class="btn btn-primary" type="button" id="start-button">Start</button>
-    </div> 
-</form>
-
-<!-- PIXEL MATRIX -->
-<div class="modal" tabindex="-1" id="pixel-select-modal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Select pixels</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div id="input-fields" class="row g-3">
+            <!-- Name input row -->
+            <div class="col-md-2">
+                <label for="input-name" class="col-sm col-form-label">Name</label>
+            </div>
+            <div class="form-floating col-md-10">
+                <input type="text" class="form-control" id="input-name">
+                <label for="input-name">Measurement name</label>
             </div>
 
-            <div class="modal-body">
-                <div class="pixel_grid" id="button-matrix"></div>
+            <!-- Duration input row -->
+            <div class="col-md-2">
+                <label for="select-time" class="col-sm col-form-label" id="input-time-label">Duration</label>
             </div>
+            <div class="col-md-2">
+                <select class="form-control" id="select-time">
+                    <option>Frames</option>
+                    <option>Seconds</option>
+                    <option>Infinite</option>
+                </select>
+            </div>
+            <div class="col-md-8">
+                <input type="number" class="form-control" id="input-time">
+            </div>
+        </div>
 
-            <div class="modal-footer">
-                <button class="btn btn-primary" id="pixel-select-all-button">Select all</button>
-                <button class="btn btn-primary" id="pixel-deselect-all-button">Deselect all</button>                
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <!-- Start button row -->
+        <div class="row-md-4">
+            <button class="totmode btn btn-primary" type="button" id="start-button">Start</button>
+        </div> 
+    </form>
+
+    <!-- PIXEL MATRIX -->
+    <div class="modal" tabindex="-1" id="pixel-select-modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Select pixels</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="pixel_grid" id="button-matrix"></div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-primary" id="pixel-select-all-button">Select all</button>
+                    <button class="btn btn-primary" id="pixel-deselect-all-button">Deselect all</button>                
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>

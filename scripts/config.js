@@ -1,6 +1,7 @@
 const axios = require('axios');
 const chartjs = require('chart.js');
 import { Sidebar } from './sidebar.js';
+import { Renderer } from './renderer.js';
 
 export var Config = (function() {
     // = Public =
@@ -42,13 +43,13 @@ export var Config = (function() {
 
         let config_params = {
             'name': input_name.val(),
-            'user_id': window.current_user.id,
+            'user_id': Renderer.current_user.id,
             'dosepix_id': input_dpx.val(),
             'i_krum': input_ikrum.val(),
         }
 
         try {
-            let res = await axios.post(window.url + 'config/new', config_params);
+            let res = await axios.post(Renderer.url + 'config/new', config_params);
             return res.data.config_id;
         } catch (error) {
             console.log(error);
@@ -59,22 +60,22 @@ export var Config = (function() {
         write_config();
 
         // Jump back to previous page
-        Sidebar.jump_back(  window.app_state );
+        Sidebar.jump_back(  Renderer.app_state );
     });
 
     dismiss_config_button.on('click', () => {
         // Jump back to previous page
-        Sidebar.jump_back(  window.app_state );
+        Sidebar.jump_back(  Renderer.app_state );
     });
 
     function on_init() {
         // Create initial config name
-        if (window.dpx_state.dpx_id != undefined) {
-            input_dpx.val(window.dpx_state.dpx_id);
+        if (Renderer.dpx_state.dpx_id != undefined) {
+            input_dpx.val(Renderer.dpx_state.dpx_id);
 
             // If initial name already in db, 
             // increment its index until the name is unique
-            axios.get(window.url + 'config/get_all').then((res) => {
+            axios.get(Renderer.url + 'config/get_all').then((res) => {
                 let configs = res.data.map(config => {return config.name});
                 let start_name = `config_dpx${input_dpx.val()}`;
                 let name = start_name;

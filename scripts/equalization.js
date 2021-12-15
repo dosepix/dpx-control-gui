@@ -1,5 +1,6 @@
 const axios = require('axios');
 import { Connect } from './connect.js';
+import { Renderer } from './renderer.js';
 
 export var Equalization = (function() {
     var equal_modal = $('#equal-modal');
@@ -16,7 +17,7 @@ export var Equalization = (function() {
     // Init with true, as measurement is not running
     var interrupt_measure = true;
     async function measure() {
-        await axios.get(window.url + 'measure/equal').then(function (res) {
+        await axios.get(Renderer.url + 'measure/equal').then(function (res) {
             console.log(res);
             // Show progress in modal
         }).catch((err) => {
@@ -50,15 +51,15 @@ export var Equalization = (function() {
             equal_start_button.prop("disabled", true);
 
             if (interrupt_measure) {
-                await axios.delete(window.url + 'measure/equal').then((res) => {
+                await axios.delete(Renderer.url + 'measure/equal').then((res) => {
                     equal_modal.modal('hide');
                     // TODO: Reset modal
-                    // Connect.update(window.dpx_state.thl_calib_id);
+                    // Connect.update(Renderer.dpx_state.thl_calib_id);
                 });
                 return;
             }
 
-            await axios.post(window.url + 'measure/equal').then(function (res) {
+            await axios.post(Renderer.url + 'measure/equal').then(function (res) {
                 response = res;
                 switch (res.data.stage) {
                     case 'Init':
@@ -147,16 +148,16 @@ export var Equalization = (function() {
     
                         
                         let store_data = {
-                            config_id: window.dpx_state.config_id,
+                            config_id: Renderer.dpx_state.config_id,
                             name: equal_name_input.val(),
                             v_tha: response.data.THL,
                             confbits: response.data.confMask,
                             pixeldac: response.data.pixelDAC,
                         }
                         
-                        axios.post(window.url + 'config/new_equal', store_data).then(function (res) {
+                        axios.post(Renderer.url + 'config/new_equal', store_data).then(function (res) {
                             console.log(res);
-                            window.dpx_state.equal_id = res.data.equal_id;
+                            Renderer.dpx_state.equal_id = res.data.equal_id;
                         });
 
                     default:
@@ -176,18 +177,18 @@ export var Equalization = (function() {
         let name = equal_name_input.val();
         if (!name | name.length === 0) {
             equal_name_input.popover('dispose');
-            equal_name_input.popover(popover_options_empty);
+            equal_name_input.popover(Renderer.popover_options.empty);
             equal_name_input.popover('show');
             return;
         }
 
         // Check if THL calib with selected name is already in db
         try {
-            let res = await axios.get(window.url + `config/get_equal_ids_names?config_id=${window.dpx_state.config_id}`);
+            let res = await axios.get(Renderer.url + `config/get_equal_ids_names?config_id=${Renderer.dpx_state.config_id}`);
             let names = res.data.map(n => n.name)
             if (!names | (names.includes(name))) {
                 equal_name_input.popover('dispose');
-                equal_name_input.popover(popover_options_in_use);
+                equal_name_input.popover(Renderer.popover_options.in_use);
                 equal_name_input.popover('show');
                 console.log("Name already taken");
                 return;
@@ -200,11 +201,11 @@ export var Equalization = (function() {
 
         interrupt_measure = false;
         console.log("Set THL calibration");
-        console.log(window.dpx_state);
+        console.log(Renderer.dpx_state);
 
         // If thl_calib is selected, set it
-        if (window.dpx_state.thl_calib_id != undefined) {
-            await axios.get(window.url + `config/set_thl_calib?id=${window.dpx_state.thl_calib_id}`);
+        if (Renderer.dpx_state.thl_calib_id != undefined) {
+            await axios.get(Renderer.url + `config/set_thl_calib?id=${Renderer.dpx_state.thl_calib_id}`);
         }
         measure();
     });
@@ -213,7 +214,7 @@ export var Equalization = (function() {
         equal_start_button.prop("disabled", false);
 
         // Stop measurement and clear and close modal
-        axios.delete(window.url + 'measure/thl_calib').then((res) => {
+        axios.delete(Renderer.url + 'measure/thl_calib').then((res) => {
             equal_modal.modal('hide');
 
             // Clear modal
@@ -250,23 +251,7 @@ export var Equalization = (function() {
     });
 
     // === Popovers ===
-    var popover_options_in_use = {
-        title: "Error",
-        content: "Name already in use! Please choose a different name",
-        trigger: "manual",
-        placement: "right",
-        container: 'body'
-    }
-
-    var popover_options_empty = {
-        title: "Error",
-        content: "Field cannot be empty. Please provide a name",
-        trigger: "manual",
-        placement: "right",
-        container: 'body'
-    }
-
-    equal_name_input.popover(popover_options_in_use);
+    equal_name_input.popover(Renderer.popover_options.in_use);
     equal_name_input.popover('hide');
 
     // Hide on input
@@ -279,12 +264,12 @@ export var Equalization = (function() {
         equal_start_button.prop("disabled", false);
 
         // Generate initial name in the input field
-        if (window.dpx_state.dpx_id != undefined) {
+        if (Renderer.dpx_state.dpx_id != undefined) {
             // If initial name already in db, 
             // increment its index until the name is unique
-            axios.get(window.url + `config/get_equal_ids_names?config_id=${window.dpx_state.config_id}`).then((res) => {
+            axios.get(Renderer.url + `config/get_equal_ids_names?config_id=${Renderer.dpx_state.config_id}`).then((res) => {
                 let names = res.data.map(n => n.name)
-                let start_name = `equal_dpx${window.dpx_state.dpx_id}`;
+                let start_name = `equal_dpx${Renderer.dpx_state.dpx_id}`;
                 let name = start_name;
                 let idx = 0;
                 while(names.includes(name)) {
@@ -295,7 +280,7 @@ export var Equalization = (function() {
                 equal_name_input.val( name );
             }).catch((err) => {
                 // No configs found
-                equal_name_input.val(`equal_dpx${window.dpx_state.dpx_id}`);
+                equal_name_input.val(`equal_dpx${Renderer.dpx_state.dpx_id}`);
             });
         }
     }

@@ -1,0 +1,21 @@
+<div class="calibration">
+    <h1>Calibration</h1>
+    <div class="row mb-3">
+        <label for="tot-hist-select" class="col-sm-2 col-form-label">ToT hist.</label>
+        <div class="col-sm-8">
+            <select class="form-control" id="tot-hist-select"></select>
+        </div>
+    </div>
+    <div class="col-sm-2">
+        <button class="btn btn-outline-primary" type="button" id="start-calib-button" style="width: 100%;">Calibrate</button>
+    </div>
+
+    <div>
+        <canvas id="chart"></canvas>
+    </div>
+
+    <div class='tfjs-container centered-container'>
+    </div>
+</div>
+
+<script src="./scripts/calibration.js" type="module"></script>

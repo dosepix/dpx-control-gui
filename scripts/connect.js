@@ -4,6 +4,7 @@ import { Sidebar } from './sidebar.js';
 import { Main } from './main.js';
 import { Thl_calibration } from './thl_calib.js';
 import { Equalization } from './equalization.js';
+import { Renderer } from './renderer.js';
 
 export var Connect = (function() {
     // = Private =
@@ -37,11 +38,11 @@ export var Connect = (function() {
 
     // Show available ports in select
     function get_ports() {
-        axios.post(window.url + 'control/get_ports').then((res) => {
+        axios.post(Renderer.url + 'control/get_ports').then((res) => {
             let ports = res.data.ports;
 
             // Clear all options
-            for(let idx=0; idx < port_select.options.length; idx) {
+            for(let idx=0; idx < port_select.options.length; idx++) {
                 port_select.remove(idx); 
             }
             if (ports.length > 0) {
@@ -58,8 +59,8 @@ export var Connect = (function() {
     }
 
     async function establish_connection(container_name=undefined) {
-        if (!window.dpx_connected) {
-            await axios.post(window.url + 'control/set_port', {"port": port_select.value}).then((res) => {});
+        if (!Renderer.dpx_connected) {
+            await axios.post(Renderer.url + 'control/set_port', {"port": port_select.value}).then((res) => {});
 
             // Baud rate is required
             if (!baud_input.value) {
@@ -68,14 +69,14 @@ export var Connect = (function() {
                 return;
             }
 
-            await axios.post(window.url + 'control/set_baud', {"baud": baud_input.value}).then((res) => {
+            await axios.post(Renderer.url + 'control/set_baud', {"baud": baud_input.value}).then((res) => {
                 // console.log(res);
             }).catch((error) => {});
 
             // Load config, otherwise use standard values
             /*
             if (config_input.value) {
-                axios.post(window.url + 'control/set_config', {"file": config_input.files[0].path});
+                axios.post(Renderer.url + 'control/set_config', {"file": config_input.files[0].path});
             } */
 
             // Try to connect
@@ -87,7 +88,7 @@ export var Connect = (function() {
             select_config_fields(false);
 
             // TODO: Requires timeout!
-            await axios.post(url + 'control/connect').then(async (res) => {
+            await axios.post(Renderer.url + 'control/connect').then(async (res) => {
                 // TODO: Visually show connection approach
 
                 // Change button to disconnect
@@ -140,13 +141,13 @@ export var Connect = (function() {
 
     async function is_connected() {
         try {
-            let res = await axios.get(window.url + 'control/isconnected');
+            let res = await axios.get(Renderer.url + 'control/isconnected');
             if (res.status == 201) {
-                window.dpx_connected = true;
+                Renderer.dpx_connected = true;
                 return true;
             }
         } catch (err) {
-            window.dpx_connected = false;
+            Renderer.dpx_connected = false;
             return false;
         }
     }
@@ -156,7 +157,7 @@ export var Connect = (function() {
         console.log(await is_connected());
         while (await is_connected() & (tries > 0)) {
             // Need to wait for disconnect before state can be checked
-            await axios.delete(window.url + 'control/connect')
+            await axios.delete(Renderer.url + 'control/connect')
             .then((res) => {
                 console.log(res)
             }).catch((err) => {
@@ -192,7 +193,7 @@ export var Connect = (function() {
     // Disable selection
     function disable_select(select, new_button, reset_button, text) {
         // Clear thl calib select
-        for(let idx=0; idx < select.options.length; idx) {
+        for(let idx=0; idx < select.options.length; idx++) {
             select.remove(idx); 
         }
         // Disable THL calib selection
@@ -228,20 +229,20 @@ export var Connect = (function() {
     // Get configs from db and set options in selection
     async function find_configs(dpx_number) {
         // Clear config select
-        for(let idx=0; idx < config_select.options.length; idx) {
+        for(let idx=0; idx < config_select.options.length; idx++) {
             config_select.remove(idx); 
         }
 
         // Search configs
         try {
-            let res = await axios.get(window.url + `config/get_all?dpx_id=${dpx_number}`);
+            let res = await axios.get(Renderer.url + `config/get_all?dpx_id=${dpx_number}`);
             for (let config of res.data) {
                 config_select.add(new Option(config.name, config.id));
             }
             config_select.disabled = false;
 
             // Currently selected config
-            window.dpx_state.config_id = config_select.value;
+            Renderer.dpx_state.config_id = config_select.value;
 
             // Scan for existing THL calibs and equalizations
             await find_thl_calibs(config_select.value);
@@ -252,25 +253,25 @@ export var Connect = (function() {
             // If there are no configs
             config_select.add(new Option("No configs found - select DPX number", undefined));
             config_select.disabled = true;
-            window.dpx_state.config_id = undefined;
+            Renderer.dpx_state.config_id = undefined;
 
             disable_select(thl_calib_select, thl_calib_new_button, thl_calib_reset_button, "Select config first");
-            window.dpx_state.thl_calib_id = undefined;
+            Renderer.dpx_state.thl_calib_id = undefined;
             disable_select(equal_select, equal_new_button, equal_reset_button, "Select config first");
-            window.dpx_state.equal_id = undefined;
+            Renderer.dpx_state.equal_id = undefined;
             return false;
         }
     }
 
     async function find_thl_calibs(config_id) {
         // Clear thl calib select
-        for(let idx=0; idx < thl_calib_select.options.length; idx) {
+        for(let idx=0; idx < thl_calib_select.options.length; idx++) {
             thl_calib_select.remove(idx); 
         }
 
         // Search thl calibs
         try {
-            let res = await axios.get(window.url + `config/get_thl_calib_ids_names?config_id=${config_id}`);
+            let res = await axios.get(Renderer.url + `config/get_thl_calib_ids_names?config_id=${config_id}`);
             for (let thl_calib of res.data) {
                 thl_calib_select.add(new Option(thl_calib.name, thl_calib.id));
             }
@@ -279,16 +280,16 @@ export var Connect = (function() {
             enable_select(thl_calib_select, thl_calib_new_button, thl_calib_reset_button);
 
             // Set currently shown value
-            if (window.dpx_state.thl_calib_id == undefined) {
-                window.dpx_state.thl_calib_id = thl_calib_select.value;
+            if (Renderer.dpx_state.thl_calib_id == undefined) {
+                Renderer.dpx_state.thl_calib_id = thl_calib_select.value;
             } 
-            thl_calib_select.value = window.dpx_state.thl_calib_id;
+            thl_calib_select.value = Renderer.dpx_state.thl_calib_id;
             return true;
         } catch (err) {
             // No calibrations found, only allow to create a new one
             disable_select(thl_calib_select, thl_calib_new_button, thl_calib_reset_button, "No calibrations found");
             thl_calib_new_button.disabled = false;
-            window.dpx_state.thl_calib_id = undefined;
+            Renderer.dpx_state.thl_calib_id = undefined;
             thl_calib_new_button.style.opacity = 1;
 
             return false;
@@ -297,28 +298,28 @@ export var Connect = (function() {
 
     async function find_equalizations(config_id) {
         // Clear equal select
-        for(let idx=0; idx < equal_select.options.length; idx) {
+        for(let idx=0; idx < equal_select.options.length; idx++) {
             equal_select.remove(idx); 
         }
 
         // Search equals
         try {
-            let res = await axios.get(window.url + `config/get_equal_ids_names?config_id=${config_id}`);
+            let res = await axios.get(Renderer.url + `config/get_equal_ids_names?config_id=${config_id}`);
             for (let equal of res.data) {
                 equal_select.add(new Option(equal.name, equal.id));
             }
 
             // Enable selection and creation of new one
             enable_select(equal_select, equal_new_button, equal_reset_button);
-            if (window.dpx_state.equal_id == undefined) {
-                window.dpx_state.equal_id = equal_select.value;
+            if (Renderer.dpx_state.equal_id == undefined) {
+                Renderer.dpx_state.equal_id = equal_select.value;
             }
-            equal_select.value = window.dpx_state.equal_id;
+            equal_select.value = Renderer.dpx_state.equal_id;
             return true;
         } catch (err) {
             // No equalizations found, only allow to create a new one
             disable_select(equal_select, equal_new_button, equal_reset_button, "No equalizations found");
-            window.dpx_state.equal_id = undefined;
+            Renderer.dpx_state.equal_id = undefined;
             equal_new_button.disabled = false;
             equal_new_button.style.opacity = 1;
 
@@ -328,25 +329,25 @@ export var Connect = (function() {
 
     // Scan database every time a number is put in the DPX number field
     dpx_input.on('input', () => {
-        window.dpx_state.dpx_id = dpx_input.val();
+        Renderer.dpx_state.dpx_id = dpx_input.val();
         find_configs(dpx_input.val());
     });
 
     // Get selected config-id
     config_select.onchange = () => {
-        window.dpx_state.config_id = config_select.value;
+        Renderer.dpx_state.config_id = config_select.value;
         find_thl_calibs(config_select.value);
         find_equalizations(config_select.value);
     };
 
     // Get selected thl-calib-id
     thl_calib_select.onchange = () => {
-        window.dpx_state.thl_calib_id = thl_calib_select.value;
+        Renderer.dpx_state.thl_calib_id = thl_calib_select.value;
     };
 
     // Get selected equalization
     equal_select.onchange = () => {
-        window.dpx_state.equal_id = equal_select.value;
+        Renderer.dpx_state.equal_id = equal_select.value;
     };
 
     // Create new THL calibration
@@ -380,12 +381,12 @@ export var Connect = (function() {
     // === Reset buttons ===
     thl_calib_reset_button.on('click', () => {
         thl_calib_select.value = "No calibration selected";
-        window.dpx_state.thl_calib_id = undefined;
+        Renderer.dpx_state.thl_calib_id = undefined;
     });
 
     equal_reset_button.on('click', () => {
         equal_select.value = "No equalization selected";
-        window.dpx_state.equal_id = undefined;
+        Renderer.dpx_state.equal_id = undefined;
     });
 
     // === Popovers ===
@@ -429,9 +430,9 @@ export var Connect = (function() {
     }
 
     function update() {
-        find_configs(window.dpx_state.dpx_id);
-        update_thl_calib(window.dpx_state.thl_calib_id);
-        update_equal(window.dpx_state.equal_id);
+        find_configs(Renderer.dpx_state.dpx_id);
+        update_thl_calib(Renderer.dpx_state.thl_calib_id);
+        update_equal(Renderer.dpx_state.equal_id);
     }
 
     // Call on init
@@ -449,7 +450,7 @@ export var Connect = (function() {
         });
 
         // Show available configs
-        window.dpx_state.dpx_id = dpx_input.val();
+        Renderer.dpx_state.dpx_id = dpx_input.val();
         find_configs(dpx_input.val());
     }
 

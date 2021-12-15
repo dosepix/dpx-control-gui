@@ -1,5 +1,6 @@
 import { Sidebar } from './sidebar.js';
 import { Connect } from './connect.js'
+import { Renderer } from './renderer.js';
 
 // Create namespace
 export var Main = (function() {
@@ -15,6 +16,9 @@ export var Main = (function() {
     var cards_measure = document.querySelector('#cards-measure');
     var totmode_card = document.querySelector('#totmode-card');
 
+    var cards_analyze = document.querySelector('#cards-analyze');
+    var calibration_card = document.querySelector('#calibration-card');
+
     var gray_out = 0.5;
     var measure_enabled;
 
@@ -22,7 +26,7 @@ export var Main = (function() {
     connect_card.onclick = async function() {
         Sidebar.show_container('connect');
         /*
-        if(window.dpx_connected) {
+        if(Renderer.dpx_connected) {
             // Disconnect DPX
             Connect.disconnect();
             connection_state();
@@ -34,7 +38,7 @@ export var Main = (function() {
 
     function connection_state() {
         // Return if DPX is connected
-        if (window.dpx_connected) {
+        if (Renderer.dpx_connected) {
             // Show measurement options
             cards_measure.style.opacity = 1.;
             measure_enabled = true;
@@ -61,20 +65,25 @@ export var Main = (function() {
 
     // === ToT MODE ===
     totmode_card.onclick = function() {
-        if(window.dpx_connected) {
+        if(Renderer.dpx_connected) {
             Sidebar.show_container('totmode');
         }
     };
+
+    // === Calibration ===
+    calibration_card.onclick = function() {
+        Sidebar.show_container('calibration');
+    }
     
     // Check state of connection once per second:
     // DPX might by disconnected manually at any time
     var dpx_connected_last = false;
     setInterval(() => {
         // Only execute when state changes
-        if (dpx_connected_last != window.dpx_connected) {
+        if (dpx_connected_last != Renderer.dpx_connected) {
             connection_state();
         }
-        dpx_connected_last = window.dpx_connected;
+        dpx_connected_last = Renderer.dpx_connected;
     }, 1000);
 
     async function on_init() {

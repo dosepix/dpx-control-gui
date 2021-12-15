@@ -1,29 +1,32 @@
 const chartjs = require('chart.js');
 const axios = require('axios');
-
 import { Pixel_matrix } from './pixel_matrix.js';
+import { Renderer } from './renderer.js';
+
 export var Totmode = (function() {
     // = Private =
-    var input_fields = document.querySelector('#input-fields');
-    var start_button = $('#start-button');
-    var input_name = $('#input-name');
+    var input_fields = document.querySelector('.totmode #input-fields');
+    var start_button = $('.totmode #start-button');
+    var input_name = $('.totmode #input-name');
+    var hist_only_check = $('.totmode #hist-only-check');
+    console.log(input_fields);
 
     // ToT range
-    var tot_range_input = document.querySelector('#tot-range-input');
-    var tot_range_slider = document.querySelector('#tot-range-slider');
+    var tot_range_input = document.querySelector('.totmode #tot-range-input');
+    var tot_range_slider = document.querySelector('.totmode #tot-range-slider');
     const tot_max = 400;
     var tot_curr = tot_max;
     tot_range_input.max = tot_max;
     tot_range_slider.max = tot_max;
 
     // Pixel select
-    var pixel_select = $('#pixel-select');
-    var pixel_select_button = $('#pixel-select-button');
-    var pixel_select_modal = $('#pixel-select-modal');
+    var pixel_select = $('.totmode #pixel-select');
+    var pixel_select_button = $('.totmode #pixel-select-button');
+    var pixel_select_modal = $('.totmode #pixel-select-modal');
 
     // Duration
-    var select_time = $('#select-time');
-    var input_time = $('#input-time');
+    var select_time = $('.totmode #select-time');
+    var input_time = $('.totmode #input-time');
 
     // Status variables
     var measurement_running = false;
@@ -64,6 +67,7 @@ export var Totmode = (function() {
     const config = {
         type: 'bar',
         options: {
+            responsive: true,
             animation : false,
             scales: {
                 y: {
@@ -109,11 +113,11 @@ export var Totmode = (function() {
     );
 
     async function start_measurement() {
-        return await axios.get(window.url + 'measure/tot');
+        return await axios.get(Renderer.url + 'measure/tot');
     }
 
     async function stop_measurement() {
-        return await axios.delete(window.url + 'measure/tot');
+        return await axios.delete(Renderer.url + 'measure/tot');
     }
 
     // Show pixels
@@ -134,33 +138,92 @@ export var Totmode = (function() {
         }
     });
 
-    async function get_frame() {
+    async function get_frame(meas_id, mode) {
         // Show only selected pixels
         if (pixel_select.val() == 'single') {
             let shown_pixels = Pixel_matrix.get_shown_pixels();
-            return await axios.post(window.url + 'measure/tot', 
+            return await axios.post(Renderer.url + 'measure/tot', 
                 {'show': pixel_select.val(),
-                'pixels': shown_pixels}
+                'pixels': shown_pixels,
+                'meas_id': meas_id,
+                'mode': mode,
+                }
             );
         } else {
-            return await axios.post(window.url + 'measure/tot', {'show': pixel_select.val()});
+            return await axios.post(Renderer.url + 'measure/tot', {
+                'show': pixel_select.val(),
+                'meas_id': meas_id,
+                'mode': mode,
+            });
         }
     }
 
     start_button.on('click', async () => {
         if(!measurement_running) {
             console.log('Start measurement');
-            // Update plot in a specified interval to reduce CPU load
+            // Maybe update plot in a specified interval to reduce CPU load
+            // Check if measurement name already in use
+            try {
+                let name = input_name.val();
+                // Empty input
+                if (!name | name.length === 0) {
+                    input_name.popover('dispose');
+                    input_name.popover(Renderer.popover_options.empty);
+                    input_name.popover('show');
+                    return;
+                }
+
+                // Check for duplicate entries
+                let res = await axios.get(Renderer.url + `measure/get_meas_ids_names?user_id=${Renderer.current_user.id}&mode=${mode}`);
+                let names = res.data.map(n => n.name);
+
+                if(names.includes(input_name.val())) {
+                    input_name.popover('dispose');
+                    input_name.popover(Renderer.popover_options.in_use);
+                    input_name.popover('show');        
+                    return;
+                }
+            } catch(err) {
+                if (err.toJSON().status == 404) {
+                    console.log('No ToT measurements in db');
+                } else {
+                    // Failed to fetch from db
+                    return;
+                }
+            }
 
             // Start measurement
-            let res = await start_measurement();
-            measurement_running = true;
-            input_fields.style.opacity = 0.5;
-            start_button[0].innerText = "Stop";
+            try {
+                await start_measurement();
+                measurement_running = true;
+                input_fields.style.opacity = 0.5;
+                start_button[0].innerText = "Stop";
+            } catch(error) {
+                // Todo: couldn't start measurement
+                return;
+            }
+
+            // Add new measurement to db
+            let meas_id;
+            try {
+                let info = {
+                    config_id: Renderer.dpx_state.config_id,
+                    user_id: Renderer.current_user.id,
+                    mode: 'tot_hist',
+                    name: input_name.val(),
+                }
+
+                let res = await axios.post(Renderer.url + 'measure/new_measurement', info);
+                meas_id = res.data.meas_id;
+            } catch(error) {
+                console.log(error);
+                return;
+            }
 
             // Measure until stop button press
+            let frame = undefined;
             while (measurement_running) {
-                let frame = await get_frame();
+                frame = await get_frame(meas_id, mode);
 
                 // Select ToT range
                 let l = frame.data.bins.slice(0, tot_curr);
@@ -175,15 +238,26 @@ export var Totmode = (function() {
                 }
                 myChart.data = data;
                 myChart.update();
+            } 
+
+            // Store histogram to database
+            let final_hist = {
+                meas_id: meas_id,
+                bins: frame.data.bins,
+                hist: frame.data.frame,
             }
+
+            await axios.post(Renderer.url + 'measure/tot_hist', final_hist);
         } else {
             await stop_measurement();
+
             if(interval != null) {
                 clearInterval(interval);
             }
             measurement_running = false;
             input_fields.style.opacity = 1;
             start_button[0].innerText = "Start";
+            initial_name();
         }
     });
 
@@ -191,20 +265,27 @@ export var Totmode = (function() {
         pixel_select_modal.modal('show');
     });
 
-    function on_init() {
-        // Pixel select
-        if (pixel_select.val() != "single") {
-            pixel_select_button.hide();
-        } else {
-            pixel_select_button.show();
-        }
+    // === Popovers ===
+    input_name.popover(Renderer.popover_options.in_use);
+    input_name.popover('hide');
 
+    // Hide on input
+    input_name.on('input', () => {
+        input_name.popover('hide');
+    });
+
+    // Save histogram or every frame
+    var mode = hist_only_check.is(':checked') ? 'tot_hist' : 'tot';
+    hist_only_check.on('change', () => {
+        mode = hist_only_check.is(':checked') ? 'tot_hist' : 'tot';
+    });
+
+    function initial_name() {
         // Generate initial name in the input field
-        // If initial name already in db, 
-        // increment its index until the name is unique
-        axios.get(window.url + `measure/get_meas_ids_names?user_id=${window.current_user.id}&mode=tot`).then((res) => {
+        axios.get(Renderer.url + `measure/get_meas_ids_names?user_id=${Renderer.current_user.id}&mode=${mode}`).then((res) => {
+            console.log(res);
             let names = res.data.map(n => n.name)
-            let start_name = `tot_meas${window.dpx_state.dpx_id}`;
+            let start_name = `tot_meas`;
             let name = start_name;
             let idx = 0;
             while(names.includes(name)) {
@@ -217,6 +298,17 @@ export var Totmode = (function() {
             // No configs found
             input_name.val('tot_meas');
         });
+    }
+
+    function on_init() {
+        // Pixel select
+        if (pixel_select.val() != "single") {
+            pixel_select_button.hide();
+        } else {
+            pixel_select_button.show();
+        }
+
+        initial_name();
     }
 
     // Public
