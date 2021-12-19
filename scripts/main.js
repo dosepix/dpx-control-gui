@@ -6,7 +6,6 @@ import { Renderer } from './renderer.js';
 export var Main = (function() {
     // = Private =
     // Page containers
-    var connect_container = document.querySelector('#connect-container');
     var connect_card = document.querySelector('#connect-card');
     var connect_img = document.querySelector('#connect-img');
     var connect_text = document.querySelector('#connect-text');
@@ -18,6 +17,7 @@ export var Main = (function() {
 
     var cards_analyze = document.querySelector('#cards-analyze');
     var calibration_card = document.querySelector('#calibration-card');
+    var database_card = document.querySelector('#database-card');
 
     var gray_out = 0.5;
     var measure_enabled;
@@ -73,6 +73,11 @@ export var Main = (function() {
     // === Calibration ===
     calibration_card.onclick = function() {
         Sidebar.show_container('calibration');
+    }
+
+    // === Database ===
+    database_card.onclick = function() {
+        Sidebar.show_container('database');
     }
     
     // Check state of connection once per second:

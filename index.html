@@ -8,7 +8,7 @@
         <meta charset="UTF-8">
         <!-- meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" -->
         <!-- meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'" -->
-        <title>Index</title>
+        <title>DPXcontrol</title>
     </head>
     
     <body>
@@ -42,21 +42,29 @@
             <div class="container-fluid" id="calibration-container">
                 <div id="include-calibration"></div>
             </div>
+
+            <!-- Database Page -->
+            <div class="container-fluid" id="database-container">
+                <div id="include-database"></div>
+            </div>
         </div>
 
-		<!-- Has to be at the end of the script -->
 		<!-- Include html -->
-		<script>window.$ = window.jQuery = require('jquery');</script>
-	    <script> $(function(){$("#include-sidebar").load("sidebar.html"); });</script>
-	    <script> $(function(){$("#include-main").load("main.html"); });</script> 
-	    <script> $(function(){$("#include-connect").load("connect.html"); });</script> 
-	    <script> $(function(){$("#include-config").load("config.html"); });</script> 
-	    <script> $(function(){$("#include-totmode").load("totmode.html"); });</script> 
-	    <script> $(function(){$("#include-calibration").load("calibration.html"); });</script> 
+	    <script> 
+            window.$ = window.jQuery = require('jquery');
 
-        <script>require('popper');</script>
-        <script>require('bootstrap');</script>
+            $(function(){$("#include-sidebar").load("sidebar.html"); });
+	        $(function(){$("#include-main").load("main.html"); });
+	        $(function(){$("#include-connect").load("connect.html"); }); 
+	        $(function(){$("#include-config").load("config.html"); });
+	        $(function(){$("#include-totmode").load("totmode.html"); });
+	        $(function(){$("#include-calibration").load("calibration.html"); });
+	        $(function(){$("#include-database").load("database.html"); });
+
+            require('popper');
+            require('bootstrap');
+        </script> 
+
         <script src="./scripts/renderer.js" type='module'></script>
-        <!-- script src="./scripts/sidebar.js"></script -->
     </body>
 </html>

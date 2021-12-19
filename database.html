@@ -1,0 +1,37 @@
+<div class="database">
+    <h1>Database</h1>
+
+    <!-- Mode selection -->
+    <div class="row mb-3">
+        <label for="meas-select" class="col-sm-3 col-form-label">Measurement mode</label>
+        <div class="col-sm-9">
+            <select class="database form-control" id="meas-mode-select">
+                <option>ToT</option>
+                <option>ToT (hist)</option>
+                <option>Dosi</option>
+                <option>Integration</option>
+                <option>Integration (hist)</option>
+            </select>
+        </div>
+    </div>
+
+    <div>
+        <button type="button" class="database" id="save-button">Save</button>
+    </div>
+
+    <!-- Measurement selection -->
+    <div class="row mb-3">
+        <label for="meas-select" class="col-sm-3 col-form-label">Measurement</label>
+        <div class="col-sm-9">
+            <select class="database form-control" id="meas-select"></select>
+        </div>
+    </div>
+
+    <!-- Chart -->
+    <div>
+        <canvas id="database-chart"></canvas>
+    </div>
+
+</div>
+
+<script src="./scripts/database.js" type="module"></script>

@@ -116,8 +116,10 @@ export var Totmode = (function() {
         return await axios.get(Renderer.url + 'measure/tot');
     }
 
-    async function stop_measurement() {
-        return await axios.delete(Renderer.url + 'measure/tot');
+    // Stop and store histogram of measurement
+    async function stop_measurement(save, meas_id) {
+        let save_str = save ? 'true' : 'false';
+        return await axios.delete(Renderer.url + `measure/tot?save=${save_str}&meas_id=${meas_id}`);
     }
 
     // Show pixels
@@ -158,7 +160,27 @@ export var Totmode = (function() {
         }
     }
 
+    // Read ToT histogram from db
+    async function read_tot_hist(meas_id) {
+        let tot_hists = [];
+        // Read ToT histograms from database
+        for (let pixel = 0; pixel < 256; pixel++) {
+            // TODO: change 0 to pixel
+            try {
+                let res = await axios.get(Renderer.url + `measure/tot_hist?meas_id=${meas_id}&pixel_id=${0}`);
+                let hist = res.data.map(n => n.value);
+                if (hist.length < 400) {
+                    // Measurement is empty
+                    return [];
+                }
+                tot_hists.push( hist )
+            } catch(error) {}
+        }
+        return tot_hists;
+    }
+
     start_button.on('click', async () => {
+        var meas_id = undefined;
         if(!measurement_running) {
             console.log('Start measurement');
             // Maybe update plot in a specified interval to reduce CPU load
@@ -204,7 +226,6 @@ export var Totmode = (function() {
             }
 
             // Add new measurement to db
-            let meas_id;
             try {
                 let info = {
                     config_id: Renderer.dpx_state.config_id,
@@ -240,16 +261,13 @@ export var Totmode = (function() {
                 myChart.update();
             } 
 
-            // Store histogram to database
-            let final_hist = {
-                meas_id: meas_id,
-                bins: frame.data.bins,
-                hist: frame.data.frame,
-            }
-
-            await axios.post(Renderer.url + 'measure/tot_hist', final_hist);
         } else {
-            await stop_measurement();
+            if (meas_id != undefined) {
+                await stop_measurement(true, meas_id);
+                meas_id = undefined;
+            } else {
+                await stop_measurement(false, -1);
+            }
 
             if(interval != null) {
                 clearInterval(interval);
@@ -284,7 +302,7 @@ export var Totmode = (function() {
         // Generate initial name in the input field
         axios.get(Renderer.url + `measure/get_meas_ids_names?user_id=${Renderer.current_user.id}&mode=${mode}`).then((res) => {
             console.log(res);
-            let names = res.data.map(n => n.name)
+            let names = res.data.map(n => n.name);
             let start_name = `tot_meas`;
             let name = start_name;
             let idx = 0;
@@ -314,5 +332,6 @@ export var Totmode = (function() {
     // Public
     return {
         on_init: on_init,
+        read_tot_hist: read_tot_hist,
     };
 })();

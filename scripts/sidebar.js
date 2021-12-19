@@ -5,6 +5,7 @@ import { Config } from './config.js';
 import { Connect } from './connect.js';
 import { Main } from './main.js';
 import { Totmode } from './totmode.js';
+import { Database } from './database.js';
 import { Renderer } from './renderer.js';
 
 export var Sidebar = (function() {
@@ -40,6 +41,7 @@ export var Sidebar = (function() {
     var totmode_container = document.querySelector('#totmode-container');
     var config_container = document.querySelector('#config-container');
     var calibration_container = document.querySelector('#calibration-container');
+    var database_container = document.querySelector('#database-container');
 
     const containers = {
         main: main_container,
@@ -47,6 +49,7 @@ export var Sidebar = (function() {
         config: config_container,
         totmode: totmode_container,
         calibration: calibration_container,
+        database: database_container,
     }
 
     const pages = {
@@ -55,6 +58,7 @@ export var Sidebar = (function() {
         config: Config,
         totmode: Totmode,
         calibration: Calibration,
+        database: Database,
     }
 
     var contents = document.querySelectorAll('.container-fluid');
@@ -225,7 +229,7 @@ export var Sidebar = (function() {
             }
 
             // Clear all users from select
-            for(let idx=0; idx < change_user_select.options.length; idx++) {
+            for(let idx=0; idx < change_user_select.options.length; idx) {
                 change_user_select.remove(idx); 
             }
 

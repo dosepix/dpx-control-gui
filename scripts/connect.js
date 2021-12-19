@@ -42,7 +42,7 @@ export var Connect = (function() {
             let ports = res.data.ports;
 
             // Clear all options
-            for(let idx=0; idx < port_select.options.length; idx++) {
+            for(let idx=0; idx < port_select.options.length; idx) {
                 port_select.remove(idx); 
             }
             if (ports.length > 0) {
@@ -193,7 +193,7 @@ export var Connect = (function() {
     // Disable selection
     function disable_select(select, new_button, reset_button, text) {
         // Clear thl calib select
-        for(let idx=0; idx < select.options.length; idx++) {
+        for(let idx=0; idx < select.options.length; idx) {
             select.remove(idx); 
         }
         // Disable THL calib selection
@@ -229,7 +229,7 @@ export var Connect = (function() {
     // Get configs from db and set options in selection
     async function find_configs(dpx_number) {
         // Clear config select
-        for(let idx=0; idx < config_select.options.length; idx++) {
+        for(let idx=0; idx < config_select.options.length; idx) {
             config_select.remove(idx); 
         }
 
@@ -265,7 +265,7 @@ export var Connect = (function() {
 
     async function find_thl_calibs(config_id) {
         // Clear thl calib select
-        for(let idx=0; idx < thl_calib_select.options.length; idx++) {
+        for(let idx=0; idx < thl_calib_select.options.length; idx) {
             thl_calib_select.remove(idx); 
         }
 
@@ -298,7 +298,7 @@ export var Connect = (function() {
 
     async function find_equalizations(config_id) {
         // Clear equal select
-        for(let idx=0; idx < equal_select.options.length; idx++) {
+        for(let idx=0; idx < equal_select.options.length; idx) {
             equal_select.remove(idx); 
         }
 
