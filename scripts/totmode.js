@@ -5,28 +5,27 @@ import { Renderer } from './renderer.js';
 
 export var Totmode = (function() {
     // = Private =
-    var input_fields = document.querySelector('.totmode #input-fields');
-    var start_button = $('.totmode #start-button');
-    var input_name = $('.totmode #input-name');
-    var hist_only_check = $('.totmode #hist-only-check');
-    console.log(input_fields);
+    const input_fields = document.querySelector('.totmode * > #input-fields');
+    const start_button = $('.totmode * > #start-button');
+    const input_name = $('.totmode * > #input-name');
+    const hist_only_check = $('.totmode * > #hist-only-check');
 
     // ToT range
-    var tot_range_input = document.querySelector('.totmode #tot-range-input');
-    var tot_range_slider = document.querySelector('.totmode #tot-range-slider');
+    const tot_range_input = document.querySelector('.totmode * > #tot-range-input');
+    const tot_range_slider = document.querySelector('.totmode * > #tot-range-slider');
     const tot_max = 400;
     var tot_curr = tot_max;
     tot_range_input.max = tot_max;
     tot_range_slider.max = tot_max;
 
     // Pixel select
-    var pixel_select = $('.totmode #pixel-select');
-    var pixel_select_button = $('.totmode #pixel-select-button');
-    var pixel_select_modal = $('.totmode #pixel-select-modal');
+    const pixel_select = $('.totmode * > #pixel-select');
+    const pixel_select_button = $('.totmode * > #pixel-select-button');
+    const pixel_select_modal = $('.totmode #pixel-select-modal');
 
     // Duration
-    var select_time = $('.totmode #select-time');
-    var input_time = $('.totmode #input-time');
+    const select_time = $('.totmode * > #select-time');
+    const input_time = $('.totmode * > #input-time');
 
     // Status variables
     var measurement_running = false;
@@ -108,11 +107,12 @@ export var Totmode = (function() {
     }; 
 
     const myChart = new chartjs.Chart(
-        document.getElementById('chart'),
+        document.querySelector('.totmode * > #chart'),
         config
     );
 
     async function start_measurement() {
+        await axios.get(Renderer.url + `config/set_equal?equal_id=${Renderer.dpx_state.equal_id}`);
         return await axios.get(Renderer.url + 'measure/tot');
     }
 
@@ -164,10 +164,9 @@ export var Totmode = (function() {
     async function read_tot_hist(meas_id) {
         let tot_hists = [];
         // Read ToT histograms from database
-        for (let pixel = 0; pixel < 256; pixel++) {
-            // TODO: change 0 to pixel
+        for (let pixel=0; pixel < 256; pixel++) {
             try {
-                let res = await axios.get(Renderer.url + `measure/tot_hist?meas_id=${meas_id}&pixel_id=${0}`);
+                let res = await axios.get(Renderer.url + `measure/tot_hist?meas_id=${meas_id}&pixel_id=${pixel}`);
                 let hist = res.data.map(n => n.value);
                 if (hist.length < 400) {
                     // Measurement is empty
@@ -179,8 +178,8 @@ export var Totmode = (function() {
         return tot_hists;
     }
 
+    var meas_id = undefined;
     start_button.on('click', async () => {
-        var meas_id = undefined;
         if(!measurement_running) {
             console.log('Start measurement');
             // Maybe update plot in a specified interval to reduce CPU load
@@ -260,7 +259,6 @@ export var Totmode = (function() {
                 myChart.data = data;
                 myChart.update();
             } 
-
         } else {
             if (meas_id != undefined) {
                 await stop_measurement(true, meas_id);
@@ -319,13 +317,7 @@ export var Totmode = (function() {
     }
 
     function on_init() {
-        // Pixel select
-        if (pixel_select.val() != "single") {
-            pixel_select_button.hide();
-        } else {
-            pixel_select_button.show();
-        }
-
+        pixel_select.val('all').trigger('change');
         initial_name();
     }
 

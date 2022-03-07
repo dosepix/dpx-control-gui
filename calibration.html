@@ -1,18 +1,60 @@
 <div class="calibration">
     <h1>Calibration</h1>
+
+    <div class="row mb-3">
+        <div class="accordion" id="info-accordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-info" aria-expanded="false" aria-controls="collapse-info">
+                        Information
+                    </button>
+                </h2>
+                <div class="accordion-collapse collapse" id="collapse-info" data-bs-parent="#info-accordion">
+                    <div class="accordion-body">
+                        A measurement of an <sup>241</sup>Am calibration source with a Mo-XRF filter attached is required to perform an energy calibration of the detector
+                        <ul>
+                            <li>The minimum measurement duration should be 10 minutes for the large and about 1 hour for the small pixels</li>
+                            <li>Select a recorded ToT-histogram from the list below and hit calibrate</li>
+                            <li>The resulting calibration can be analysed via the plots below</li>
+                            <li>The energy calibration is stored in the database and is utilized when a transformation from ToT to deposited energy is required</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row mb-3">
         <label for="tot-hist-select" class="col-sm-2 col-form-label">ToT hist.</label>
         <div class="col-sm-10">
             <select class="form-control" id="tot-hist-select"></select>
         </div>
     </div>
-    <div class="col-sm-2">
-        <button class="btn btn-outline-primary" type="button" id="start-calib-button" style="width: 100%;">Calibrate</button>
+    <div class="row mb-3">
+        <button class="btn btn-primary btn-block" type="button" id="start-calib-button">Calibrate</button>
     </div>
 
-    <div>        
-        <canvas id="tot-hist"></canvas>
-        <canvas id="energy-hist"></canvas>
+    <hr>
+    <h3>Results</h3>
+    <div class="row mb-3">
+        <div class="col-md-2">
+            <label for="pixel-select-range" class="form-label">Pixel select</label>
+        </div>  
+        <div class="col-md-8">
+            <input type="range" class="form-range" min="0" max="255" value="0" step=1 id="pixel-select-range">
+        </div>
+        <div class="col-md-2">
+            <input type="number" class="form-control" id="pixel-select-input" value=0 max=255>
+        </div>
+    </div>
+
+    <div>
+        <div class="canvas-container"> 
+            <canvas id="tot-hist"></canvas> 
+        </div>
+        <div class="canvas-container"> 
+            <canvas id="energy-hist"></canvas> 
+        </div>
     </div>
 
     <div class='tfjs-container centered-container'>

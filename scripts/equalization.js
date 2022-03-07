@@ -170,6 +170,7 @@ export var Equalization = (function() {
         // Sucessfully equalized
         console.log(response.data);
         equal_start_button.prop("disabled", false);
+        interrupt_measure = true;
     }
 
     equal_start_button.on("click", async () => {
@@ -196,7 +197,6 @@ export var Equalization = (function() {
                 equal_name_input.popover('hide');
             }
         } catch (err) {
-            return;
         }
 
         interrupt_measure = false;

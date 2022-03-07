@@ -28,10 +28,16 @@
             <span class="sidebar-item-text">Measure</span>
         </li>
 
-        <li class="sidebar-item" id="sidebar-analyze-link">
-            <span class="bi-graph-up" style="font-size: 1rem;"></span>
-            <span class="sidebar-item-text">Analyze</span>
-        </li>
+        <div class="dropend">
+            <li class="sidebar-item dropdown-toggle" type="button" data-bs-toggle="dropdown" id="sidebar-analyze-link">
+                <span class="bi-graph-up" style="font-size: 1rem;"></span>
+                <span class="sidebar-item-text">Analyze</span>
+            </li>
+            <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+                <li class="dropdown-item">Calibration</li>
+                <li class="dropdown-item">Database</li>
+            </ul>
+        </div>
     </ul>
 
     <!-- USER MENU -->

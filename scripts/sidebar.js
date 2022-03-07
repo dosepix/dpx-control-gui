@@ -5,6 +5,7 @@ import { Config } from './config.js';
 import { Connect } from './connect.js';
 import { Main } from './main.js';
 import { Totmode } from './totmode.js';
+import { Dosimode } from './dosimode.js';
 import { Database } from './database.js';
 import { Renderer } from './renderer.js';
 
@@ -39,6 +40,7 @@ export var Sidebar = (function() {
     var main_container = document.querySelector('#main-container');
     var connect_container = document.querySelector('#connect-container');
     var totmode_container = document.querySelector('#totmode-container');
+    var dosimode_container = document.querySelector('#dosimode-container');
     var config_container = document.querySelector('#config-container');
     var calibration_container = document.querySelector('#calibration-container');
     var database_container = document.querySelector('#database-container');
@@ -48,6 +50,7 @@ export var Sidebar = (function() {
         connect: connect_container,
         config: config_container,
         totmode: totmode_container,
+        dosimode: dosimode_container,
         calibration: calibration_container,
         database: database_container,
     }
@@ -57,6 +60,7 @@ export var Sidebar = (function() {
         connect: Connect,
         config: Config,
         totmode: Totmode,
+        dosimode: Dosimode,
         calibration: Calibration,
         database: Database,
     }

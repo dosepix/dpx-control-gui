@@ -6,20 +6,21 @@ import { Renderer } from './renderer.js';
 export var Main = (function() {
     // = Private =
     // Page containers
-    var connect_card = document.querySelector('#connect-card');
-    var connect_img = document.querySelector('#connect-img');
-    var connect_text = document.querySelector('#connect-text');
-    var connect_title = document.querySelector('#connect-title');
+    const connect_card = document.querySelector('#connect-card');
+    const connect_img = document.querySelector('#connect-img');
+    const connect_text = document.querySelector('#connect-text');
+    const connect_title = document.querySelector('#connect-title');
 
     // Measurement cards
-    var cards_measure = document.querySelector('#cards-measure');
-    var totmode_card = document.querySelector('#totmode-card');
+    const cards_measure = document.querySelector('#cards-measure');
+    const totmode_card = document.querySelector('#totmode-card');
+    const dosimode_card = document.querySelector('#dosimode-card');
 
-    var cards_analyze = document.querySelector('#cards-analyze');
-    var calibration_card = document.querySelector('#calibration-card');
-    var database_card = document.querySelector('#database-card');
+    const cards_analyze = document.querySelector('#cards-analyze');
+    const calibration_card = document.querySelector('#calibration-card');
+    const database_card = document.querySelector('#database-card');
 
-    var gray_out = 0.5;
+    const gray_out = 0.5;
     var measure_enabled;
 
     // === CONNECT ===
@@ -67,6 +68,13 @@ export var Main = (function() {
     totmode_card.onclick = function() {
         if(Renderer.dpx_connected) {
             Sidebar.show_container('totmode');
+        }
+    };
+
+    // === DOSI MODE ===
+    dosimode_card.onclick = function() {
+        if(Renderer.dpx_connected) {
+            Sidebar.show_container('dosimode');
         }
     };
 

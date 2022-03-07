@@ -1,12 +1,9 @@
 @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
-
-.title {
-	font-family: Helvetica;
-	size: 18px;
-}
+@import "https://fonts.googleapis.com/css?family=Manrope:300,400,500,600,700";
 
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Manrope', sans-serif;
+    font-size: 1.2rem;
     background: #fafafa;
     box-sizing: border-box; 
 
@@ -17,12 +14,16 @@ body {
 	-o-user-select:none;
 }
 
+.title {
+	/* font-family: Helvetica; */
+	size: 18px;
+}
+
 h1 {
 	color: rgb(58, 58, 58);
 }
 
 p {
-    font-family: 'Poppins', sans-serif;
     font-size: 1.1em;
     font-weight: 300;
     line-height: 1.7em;
@@ -38,7 +39,6 @@ a, a:hover, a:focus {
 .wrapper {
     display: flex;
     flex-wrap: wrap;
-    z-index: -1;
     width: 100%;
     padding-right: 0;
     /*
@@ -57,7 +57,7 @@ a, a:hover, a:focus {
     /* z-index: auto; */ 
     top: 0; 
     left: 0;
-    overflow-x: hidden; /* Disable horizontal scroll */
+    /* overflow-x: hidden; Disable horizontal scroll */
     padding-top: 20px;
     transition: all 0.5s ease;
 }
@@ -82,6 +82,7 @@ a, a:hover, a:focus {
     margin-bottom: 0.2rem;
     color: lightgray;
     cursor: pointer;
+    border-radius: 10px;
     transition: 0.5s ease;
 }
 
@@ -98,6 +99,8 @@ a, a:hover, a:focus {
 }
 
 .sidebar.collapse .sidebar-item-text {
+    width: 0;
+    margin-left: -0.1rem;
     opacity: 0;
     pointer-events: none;
 }
@@ -157,8 +160,12 @@ a, a:hover, a:focus {
 }
 
 .dropdown-menu {
-    transition: 0.5s ease;
-    position: absolute;
+    /* transition: 0.5s ease; */
+    position: relative;
+}
+
+.card {
+    position: unset;
 }
 
 .card-img-top {
@@ -185,12 +192,11 @@ a, a:hover, a:focus {
 
     /* margin: 30px; */
     margin-left: 15rem; 
-    display: true; /* Hidden by default */
     width: 100%; /* Full width (cover the whole page) */
     height: 100%; /* Full height (cover the whole page) */
-    padding: 2.1rem 1.2rem;
+    padding: 3rem 3rem;
     min-height: 100vh;
-    /* z-index: auto; Specify a stack order in case you're using a different order for other elements */
+    z-index: auto; /* Specify a stack order in case you're using a different order for other elements */
     transition: all 0.5s ease;
 }
 
@@ -230,4 +236,29 @@ a, a:hover, a:focus {
 }
 .box_button_inactive_small {
     background-color: #ff222233;
+}
+
+h1.heading {
+    width: 80%;
+    margin: .4em auto;
+    overflow: hidden;
+    text-align: center;
+    font-weight: 500;
+    font-size: 2rem;
+}
+
+@media only screen and (min-width: 600px) {
+    h1.heading:before, h1.heading:after {
+        content: "";
+        display: inline-block;
+        width: 50%;
+        margin: 0 .5em 0 -55%;
+        vertical-align: middle;
+        border-bottom: 1px solid;
+        color: darkcyan;
+    }
+}
+
+h1.heading:after {
+    margin: 0 -55% 0 .5em;
 }

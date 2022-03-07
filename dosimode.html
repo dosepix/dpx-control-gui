@@ -1,4 +1,4 @@
-<div class="totmode">
+<div class="dosimode">
     <form id="form" class="row g-3">
         <!-- Chart -->
         <div class="col-md-10">
@@ -16,24 +16,6 @@
                 </select>
                 <button class="btn btn-primary" type="button" id="pixel-select-button">Pixel select</button>
             </div>
-            <br>
-
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="hist-only-check" checked>
-                <label for="hist-only-check" class="form-label">Save only hist.</label>
-            </div>
-        </div>
-
-        <!-- ToT range -->
-        <div class="col-md-2">
-            <label for="tot-range-slider" class="form-label">Max. ToT</label>
-        </div>  
-        <div class="col-md-8">
-            <input type="range" class="form-range" min="0" max="400" value="400" step=1 id="tot-range-slider">
-        </div>
-        <div class="form-floating col-md-2">
-            <input type="number" class="form-control" id="tot-range-input" value=400 max=400>
-            <label for="tot-range-input">in ToT</label>
         </div>
 
         <div id="input-fields" class="row g-3">
@@ -67,7 +49,7 @@
     </form>
 
     <!-- PIXEL MATRIX -->
-    <div class="totmode modal" tabindex="-1" id="pixel-select-modal" aria-hidden="true">
+    <div class="dosimode modal" tabindex="-1" id="pixel-select-modal" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -90,3 +72,4 @@
 </div>
 
 <script src="./scripts/totmode.js" type="module"></script>
+<!-- script src="./scripts/pixel_matrix.js" type="module"></script -->

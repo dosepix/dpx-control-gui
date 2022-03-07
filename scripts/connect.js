@@ -304,6 +304,7 @@ export var Connect = (function() {
 
         // Search equals
         try {
+            // TODO: Get for DPX number, not config
             let res = await axios.get(Renderer.url + `config/get_equal_ids_names?config_id=${config_id}`);
             for (let equal of res.data) {
                 equal_select.add(new Option(equal.name, equal.id));
