@@ -21,6 +21,10 @@ export var Renderer = (function() {
         }
     }
 
+    var settings = {
+        single_hw: true,
+    }
+
     // DPX state
     var dpx_state = {
         id: undefined,
@@ -103,6 +107,7 @@ export var Renderer = (function() {
 
     return {
         popover_options: popover_options,
+        settings: settings,
         dpx_state: dpx_state,
         url: url,
         dpx_connected: dpx_connected,

@@ -69,9 +69,10 @@ export var Connect = (function() {
                 return;
             }
 
-            await axios.post(Renderer.url + 'control/set_baud', {"baud": baud_input.value}).then((res) => {
-                // console.log(res);
-            }).catch((error) => {});
+            if (!Renderer.settings.single_hw) {
+                await axios.post(Renderer.url + 'control/set_baud', {"baud": baud_input.value}).then((res) => {
+                }).catch((error) => {});
+            }
 
             // Load config, otherwise use standard values
             /*
@@ -210,7 +211,9 @@ export var Connect = (function() {
     function select_main_fields(sel) {
         $(port_select).prop('disabled', !sel);
         port_select_refresh_button.prop('disabled', !sel);
-        $(baud_input).prop('disabled', !sel);
+        if (!Renderer.settings.single_hw) {
+            $(baud_input).prop('disabled', !sel);
+        }
         dpx_input.prop('disabled', !sel);
     }
 
@@ -441,6 +444,12 @@ export var Connect = (function() {
         console.log("Connect init");
         // Scan for ports
         get_ports();
+
+        // Check settings
+        if (Renderer.settings.single_hw) {
+            baud_input.value = -1;
+            baud_input.disabled = true;
+        }
 
         await is_connected().then((res) => {
             if (res) {

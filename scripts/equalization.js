@@ -204,7 +204,7 @@ export var Equalization = (function() {
         console.log(Renderer.dpx_state);
 
         // If thl_calib is selected, set it
-        if (Renderer.dpx_state.thl_calib_id != undefined) {
+        if (!Renderer.settings.single_hw & (Renderer.dpx_state.thl_calib_id != undefined)) {
             await axios.get(Renderer.url + `config/set_thl_calib?id=${Renderer.dpx_state.thl_calib_id}`);
         }
         measure();
