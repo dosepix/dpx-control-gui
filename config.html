@@ -56,19 +56,181 @@
             </div>
 
             <div class="modal-body">
+                <h5>Periphery DACs</h5>
+                <!-- V_casc_reset -->
                 <div class="row g-3">
                     <div class="col-md-2">
-                        <label>Name</label>
+                        <label>V<sub>casc_reset</sub></label>
                     </div>
-                    <div class="col-md-10">
-                        <input class="form-control" type="text" id="adv-sett-name-input"/>
+                    <div class="col-md-7">
+                        <input type="range" class="form-range" min="0" max="100" value="84" step=1 id="pdac-vcasc-slider">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" class="form-control" id="pdac-vcasc-input" value=84 max=100>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-primary" id="pdac-vcasc-button"><span class="bi-arrow-repeat"></span></button>
                     </div>
                 </div>
+
+                <!-- I_pixel_dac -->
+                <div class="row g-3">
+                    <div class="col-md-2">
+                        <label>I<sub>pixel_dac</sub></label>
+                    </div>
+                    <div class="col-md-7">
+                        <input type="range" class="form-range" min="0" max="100" value="59" step=1 id="pdac-ipixeldac-slider">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" class="form-control" id="pdac-ipixeldac-input" value=59 max=100>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-primary" id="pdac-ipixeldac-button"><span class="bi-arrow-repeat"></span></button>
+                    </div>
+                </div>
+
+                <!-- V_fbk -->
+                <div class="row g-3">
+                    <div class="col-md-2">
+                        <label>V<sub>fbk</sub></label>
+                    </div>
+                    <div class="col-md-7">
+                        <input type="range" class="form-range" min="0" max="100" value="71" step=1 id="pdac-vfbk-slider">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" class="form-control" id="pdac-vfbk-input" value=71 max=100>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-primary" id="pdac-vfbk-button"><span class="bi-arrow-repeat"></span></button>
+                    </div>
+                </div>
+
+                <!-- I_preamp -->
+                <div class="row g-3">
+                    <div class="col-md-2">
+                        <label>I<sub>preamp</sub></label>
+                    </div>
+                    <div class="col-md-7">
+                        <input type="range" class="form-range" min="0" max="100" value="29" step=1 id="pdac-ipreamp-slider">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" class="form-control" id="pdac-ipreamp-input" value=29 max=100>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-primary" id="pdac-ipreamp-button"><span class="bi-arrow-repeat"></span></button>
+                    </div>
+                </div>
+
+                <!-- V_gnd -->
+                <div class="row g-3">
+                    <div class="col-md-2">
+                        <label>V<sub>gnd</sub></label>
+                    </div>
+                    <div class="col-md-7">
+                        <input type="range" class="form-range" min="0" max="100" value="31" step=1 id="pdac-vgnd-slider">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" class="form-control" id="pdac-vgnd-input" value=31 max=100>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-primary" id="pdac-vgnd-button"><span class="bi-arrow-repeat"></span></button>
+                    </div>
+                </div>
+
+                <!-- V_casc_preamp -->
+                <div class="row g-3">
+                    <div class="col-md-2">
+                        <label>V<sub>casc_preamp</sub></label>
+                    </div>
+                    <div class="col-md-7">
+                        <input type="range" class="form-range" min="0" max="100" value="49" step=1 id="pdac-vcascpreamp-slider">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" class="form-control" id="pdac-vcascpreamp-input" value=49 max=100>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-primary" id="pdac-vcascpreamp-button"><span class="bi-arrow-repeat"></span></button>
+                    </div>
+                </div>
+
+                <!-- I_disc1 -->
+                <div class="row g-3">
+                    <div class="col-md-2">
+                        <label>I<sub>disc1</sub></label>
+                    </div>
+                    <div class="col-md-7">
+                        <input type="range" class="form-range" min="0" max="100" value="27" step=1 id="pdac-idisc1-slider">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" class="form-control" id="pdac-idisc1-input" value=27 max=100>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-primary" id="pdac-idisc1-button"><span class="bi-arrow-repeat"></span></button>
+                    </div>
+                </div>
+
+                <!-- I_disc2 -->
+                <div class="row g-3">
+                    <div class="col-md-2">
+                        <label>I<sub>disc2</sub></label>
+                    </div>
+                    <div class="col-md-7">
+                        <input type="range" class="form-range" min="0" max="100" value="54" step=1 id="pdac-idisc2-slider">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" class="form-control" id="pdac-idisc2-input" value=54 max=100>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-primary" id="pdac-idisc2-button"><span class="bi-arrow-repeat"></span></button>
+                    </div>
+                </div>
+                <hr>
+
+                <h5>OMR</h5>
+                <!-- PLL -->
+                <div class="row g-3">
+                    <div class="col-md-2">
+                        <label>PLL</label>
+                    </div>
+                    <div class="col-md-10">
+                        <select class="form-select" id="omr-polarity-select">
+                            <option value="110" selected>100 MHz (default)</option>
+                            <option value="000">PLL bypass</option>
+                            <option value="001">16.6 MHz</option>
+                            <option value="010">20 MHz</option>
+                            <option value="011">25 MHz</option>
+                            <option value="100">33.2 MHz</option>
+                            <option value="101">50 MHz</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Polarity -->
+                <div class="row g-3">
+                    <div class="col-md-2">
+                        <label>Polarity</label>
+                    </div>
+                    <div class="col-md-10">
+                        <select class="form-select" id="omr-polarity-select">
+                            <option value="0" selected>Hole collection (default)</option>
+                            <option value="1">Electron collection</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Column clock gating -->
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="omr-col-clk-check">
+                    <label class="form-check-label" for="omr-col-clk-check">
+                        Disable column clock gating
+                    </label>
+                </div>
+
                 <div id="adv-sett-modal-body"></div>
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="adv-sett-accept-button">Start</button>
+                <button type="button" class="btn btn-primary" id="adv-sett-accept-button">Accept</button>
                 <button type="button" class="btn btn-secondary" id="adv-sett-discard-button">Discard & Close</button>
             </div>
         </div>
