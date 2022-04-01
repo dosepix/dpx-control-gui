@@ -38,16 +38,41 @@
         </div>
     </div>
 
-    <!--
-    <button class="btn btn-primary" type="button" id="thl-calib-button">THL Calibration (optional)</button>
-    <button class="btn btn-primary" type="button" id="equal-button">Equalization (recommended)</button>
-    -->
-
     <!-- Start button row -->
+    <hr>
     <div class="row-md-4">
         <button class="btn btn-primary" type="button" id="create-config-button">Create Config</button>
         <button class="btn btn-secondary" type="button" id="dismiss-config-button">Dismiss</button>
     </div> 
 </form>
+
+<!-- Advanced settings modal -->
+<div class="modal fade" tabindex="-1" id="adv-sett-modal" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Advanced settings</h5>
+                <button type="button" class="btn-close" id="adv-sett-cross-button"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row g-3">
+                    <div class="col-md-2">
+                        <label>Name</label>
+                    </div>
+                    <div class="col-md-10">
+                        <input class="form-control" type="text" id="adv-sett-name-input"/>
+                    </div>
+                </div>
+                <div id="adv-sett-modal-body"></div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="adv-sett-accept-button">Start</button>
+                <button type="button" class="btn btn-secondary" id="adv-sett-discard-button">Discard & Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="./scripts/config.js" type="module"></script>

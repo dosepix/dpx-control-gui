@@ -10,7 +10,14 @@ export var Config = (function() {
     var input_dpx = $('#input-dpx');
     var input_ikrum = $('#input-ikrum');
     var create_config_button = $('#create-config-button');
-    var dismiss_config_button =$('#dismiss-config-button');
+    var dismiss_config_button = $('#dismiss-config-button');
+
+    // Advanced settings
+    var adv_sett_modal = $('#adv-sett-modal');
+    var adv_sett_modal_body = document.querySelector('#adv-sett-modal-body');
+    var adv_sett_cross_button = $('#adv-sett-cross-button');
+    var adv_sett_discard_button = $('#adv-sett-discard-button');
+    var adv_sett_button = $('#adv-sett-button');
 
     // Global config state
     var config_state = {
@@ -58,15 +65,33 @@ export var Config = (function() {
 
     create_config_button.on('click', () => {
         write_config();
-
         // Jump back to previous page
-        Sidebar.jump_back(  Renderer.app_state );
+        Sidebar.jump_back( Renderer.app_state );
     });
 
     dismiss_config_button.on('click', () => {
         // Jump back to previous page
-        Sidebar.jump_back(  Renderer.app_state );
+        Sidebar.jump_back( Renderer.app_state );
     });
+
+    // === Advanced settings ===
+    // Open dialog for advanced settings
+    adv_sett_button.on('click', () => {
+        adv_sett_modal.modal('show');
+    });
+
+    // Discard buttons
+    function close_adv_sett_modal() {
+        adv_sett_modal.modal('hide');
+    }
+
+    adv_sett_cross_button.on('click', () => {
+        close_adv_sett_modal();
+    });
+
+    adv_sett_discard_button.on('click', () => {
+        close_adv_sett_modal();
+    })
 
     function on_init() {
         // Create initial config name
