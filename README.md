@@ -17,6 +17,13 @@ Download the dpx-control-gui from github and install via `npm` by running
 in the project's folder. Finally, run the program via
 ``` npm run ```
 
+## Docker
+
+A docker-image can be build via  
+``` docker build -t dpx_gui ```
+and executed via  
+``` docker run -e DISPLAY=unix$DISPLAY --cap-add=SYS_ADMIN dpx_gui ```
+
 ## Features
 
 <p align="center">
