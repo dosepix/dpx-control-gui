@@ -88,9 +88,22 @@ export var Connect = (function() {
             select_main_fields(false);
             select_config_fields(false);
 
+            // Set timeout for connection approach
+            var timeout_id = setTimeout(() => {
+                connect_button.text("Connect");
+                connect_button.attr('class', 'btn btn-primary')
+                select_main_fields(true);
+                select_config_fields(true);
+                connect_button.popover('show');
+                connect_button.prop('disabled', false);
+            }, 2000);
+
             // TODO: Requires timeout!
             await axios.post(Renderer.url + 'control/connect').then(async (res) => {
                 // TODO: Visually show connection approach
+                // Reset timeout if connection was successful
+                console.log('Clearing timeout');
+                clearTimeout(timeout_id);
 
                 // Change button to disconnect
                 await is_connected();
@@ -170,6 +183,11 @@ export var Connect = (function() {
 
     // console.log(port_select.val());
     port_select_refresh_button.on('click', get_ports);
+
+    port_select.addEventListener("change", () => {
+        Renderer.current_port.value = port_select.value;
+        console.log(port_select.value);
+    });
 
     // Connect button
     connect_button.on('click', () => {
@@ -442,8 +460,13 @@ export var Connect = (function() {
     // Call on init
     async function on_init() {
         console.log("Connect init");
-        // Scan for ports
-        get_ports();
+        // Set port to current value
+        if (Renderer.current_port.value !== undefined) {
+            port_select.value = Renderer.current_port.value;
+        } else {
+            // Scan for ports
+            get_ports();
+        }
 
         // Check settings
         if (Renderer.settings.single_hw) {
@@ -461,7 +484,14 @@ export var Connect = (function() {
 
         // Show available configs
         Renderer.dpx_state.dpx_id = dpx_input.val();
-        find_configs(dpx_input.val());
+
+        // Set config to current value
+        let config_id_pre = Renderer.dpx_state.config_id;
+        await find_configs(dpx_input.val());
+        if (config_id_pre !== undefined) {
+            console.log(config_id_pre);
+            config_select.value = config_id_pre;
+        }
     }
 
     // = Public =

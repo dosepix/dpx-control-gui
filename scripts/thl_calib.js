@@ -98,11 +98,13 @@ export var Thl_calibration = (function() {
                 volt.push(res.data.Volt);
                 ADC.push(res.data.ADC);
 
-                // Update only on 10th frame
                 if (!(cnt % 10)) {
                     volt_show.push(res.data.Volt);
                     ADC_show.push(res.data.ADC);
-        
+                }
+
+                // Update only on 10th frame
+                if (!(cnt % 100)) {        
                     // Update chart
                     let data = {
                         labels: ADC_show,

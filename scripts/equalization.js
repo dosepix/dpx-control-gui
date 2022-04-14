@@ -49,6 +49,7 @@ export var Equalization = (function() {
         }
         while (response.data.stage != 'finished') {
             equal_start_button.prop("disabled", true);
+            equal_discard_button.text("Discard & Close");
 
             if (interrupt_measure) {
                 await axios.delete(Renderer.url + 'measure/equal').then((res) => {
@@ -97,6 +98,7 @@ export var Equalization = (function() {
                                 .attr("aria-valuenow", 100)
                                 .text(100 + "%");
                         }
+
                     case 'THL_loop_start':
                         // Status bar
                         if (status.last_label_id == 'main') {
@@ -128,7 +130,7 @@ export var Equalization = (function() {
                         console.log(labels);
                         console.log(status_bars);
                         break;
-    
+
                     case 'THL_pre':
                     case 'THL':
                         dots_num = cnt % 4;
@@ -145,8 +147,7 @@ export var Equalization = (function() {
                         $(status_bars[status.last_statusbar_id]).css("width", 100 + "%")
                             .attr("aria-valuenow", 100)
                             .text(100 + "%");
-    
-                        
+
                         let store_data = {
                             config_id: Renderer.dpx_state.config_id,
                             name: equal_name_input.val(),
@@ -154,7 +155,7 @@ export var Equalization = (function() {
                             confbits: response.data.confMask,
                             pixeldac: response.data.pixelDAC,
                         }
-                        
+
                         axios.post(Renderer.url + 'config/new_equal', store_data).then(function (res) {
                             console.log(res);
                             Renderer.dpx_state.equal_id = res.data.equal_id;
@@ -170,6 +171,7 @@ export var Equalization = (function() {
         // Sucessfully equalized
         console.log(response.data);
         equal_start_button.prop("disabled", false);
+        equal_discard_button.text("Close");
         interrupt_measure = true;
     }
 
@@ -237,6 +239,7 @@ export var Equalization = (function() {
         } else {
             equal_modal.modal('hide');
         }
+        equal_discard_button.text("Close");
     });
 
     equal_cross_button.on('click', () => {

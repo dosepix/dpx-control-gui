@@ -112,7 +112,11 @@ export var Totmode = (function() {
     );
 
     async function start_measurement() {
-        await axios.get(Renderer.url + `config/set_equal?equal_id=${Renderer.dpx_state.equal_id}`);
+        try {
+            await axios.get(Renderer.url + `config/set_equal?equal_id=${Renderer.dpx_state.equal_id}`);
+        } catch {
+            console.log('No equalization selected, measurements might be noisy')
+        }
         return await axios.get(Renderer.url + 'measure/tot');
     }
 

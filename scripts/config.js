@@ -56,8 +56,9 @@ export var Config = (function() {
         }
     }
 
-    create_config_button.on('click', () => {
-        write_config();
+    create_config_button.on('click', async () => {
+        let config_id = await write_config();
+        Renderer.dpx_state.config_id = config_id;
 
         // Jump back to previous page
         Sidebar.jump_back(  Renderer.app_state );
@@ -65,7 +66,7 @@ export var Config = (function() {
 
     dismiss_config_button.on('click', () => {
         // Jump back to previous page
-        Sidebar.jump_back(  Renderer.app_state );
+        Sidebar.jump_back( Renderer.app_state );
     });
 
     function on_init() {

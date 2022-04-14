@@ -47,6 +47,17 @@ export var Renderer = (function() {
         }
     }
 
+    // Selected port
+    var current_port = {
+        value: undefined,
+        get data() {
+            return this.value;
+        },
+        set data(value) {
+            this.value = value;
+        }
+    }
+
     // User state
     var current_user = {
         name: "default",
@@ -112,6 +123,7 @@ export var Renderer = (function() {
         url: url,
         dpx_connected: dpx_connected,
         current_user: current_user,
+        current_port: current_port,
         app_state: app_state,
     };
 })();
