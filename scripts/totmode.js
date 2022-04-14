@@ -37,7 +37,9 @@ export var Totmode = (function() {
         }
         tot_range_slider.value = tot_range_input.value;
         myChart.options.scales.x.max = tot_range_input.value;
-        // if (!measurement_running) myChart.update();
+        if (!measurement_running) {
+            myChart.update();
+        }
         tot_curr = tot_range_input.value;
     });
 
@@ -45,7 +47,9 @@ export var Totmode = (function() {
         tot_range_input.value = tot_range_slider.value;
 
         myChart.options.scales.x.max = tot_range_slider.value;
-        // if (!measurement_running) myChart.update();
+        if (!measurement_running) {
+            myChart.update();
+        }
         tot_curr = tot_range_slider.value;
     });
 
@@ -113,7 +117,10 @@ export var Totmode = (function() {
 
     async function start_measurement() {
         try {
-            await axios.get(Renderer.url + `config/set_equal?equal_id=${Renderer.dpx_state.equal_id}`);
+            await axios.get(
+                Renderer.url +
+                `config/set_equal?equal_id=${Renderer.dpx_state.equal_id}`
+            );
         } catch {
             console.log('No equalization selected, measurements might be noisy')
         }
@@ -123,7 +130,10 @@ export var Totmode = (function() {
     // Stop and store histogram of measurement
     async function stop_measurement(save, meas_id) {
         let save_str = save ? 'true' : 'false';
-        return await axios.delete(Renderer.url + `measure/tot?save=${save_str}&meas_id=${meas_id}`);
+        return await axios.delete(
+            Renderer.url +
+            `measure/tot?save=${save_str}&meas_id=${meas_id}`
+        );
     }
 
     // Show pixels
@@ -170,7 +180,10 @@ export var Totmode = (function() {
         // Read ToT histograms from database
         for (let pixel=0; pixel < 256; pixel++) {
             try {
-                let res = await axios.get(Renderer.url + `measure/tot_hist?meas_id=${meas_id}&pixel_id=${pixel}`);
+                let res = await axios.get(
+                    Renderer.url +
+                    `measure/tot_hist?meas_id=${meas_id}&pixel_id=${pixel}`
+                );
                 let hist = res.data.map(n => n.value);
                 if (hist.length < 400) {
                     // Measurement is empty
@@ -199,7 +212,10 @@ export var Totmode = (function() {
                 }
 
                 // Check for duplicate entries
-                let res = await axios.get(Renderer.url + `measure/get_meas_ids_names?user_id=${Renderer.current_user.id}&mode=${mode}`);
+                let res = await axios.get(
+                    Renderer.url +
+                    `measure/get_meas_ids_names?user_id=${Renderer.current_user.id}&mode=${mode}`
+                );
                 let names = res.data.map(n => n.name);
 
                 if(names.includes(input_name.val())) {
@@ -237,7 +253,11 @@ export var Totmode = (function() {
                     name: input_name.val(),
                 }
 
-                let res = await axios.post(Renderer.url + 'measure/new_measurement', info);
+                let res = await axios.post(
+                    Renderer.url +
+                    'measure/new_measurement',
+                    info
+                );
                 meas_id = res.data.meas_id;
             } catch(error) {
                 console.log(error);
@@ -302,7 +322,10 @@ export var Totmode = (function() {
 
     function initial_name() {
         // Generate initial name in the input field
-        axios.get(Renderer.url + `measure/get_meas_ids_names?user_id=${Renderer.current_user.id}&mode=${mode}`).then((res) => {
+        axios.get(
+            Renderer.url +
+            `measure/get_meas_ids_names?user_id=${Renderer.current_user.id}&mode=${mode}`
+        ).then((res) => {
             console.log(res);
             let names = res.data.map(n => n.name);
             let start_name = `tot_meas`;
