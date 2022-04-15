@@ -1,0 +1,4 @@
+.calibration * > .canvas-container {
+    width: 49%; 
+    display:inline-block;
+}
